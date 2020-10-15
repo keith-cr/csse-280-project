@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
+  <link rel="stylesheet" href="styles/bootstrap-material-design.min.css">
+  <link rel="stylesheet" href="styles/main.css">
+  <title>Now View | Rose Schedule</title>
+</head>
+
+<body>
+  <nav class="navbar navbar-dark fixed-top justify-content-between">
+    <a class="navbar-brand" href="/now.html">John's Schedule</a>
+    <div>
+      <button class="btn btn-log-out my-2 my-sm-0">Log Out</button>
+    </div>
+  </nav>
+  <div id="nowViewPage" class="now-page container page-container">
+    <div class="row">
+      <div class="col-1">
+        <div class="view-selector">
+          <div class="view-text">View</div>
+          <a href="/now.html" class="view-text active">Now</a>
+          <a href="/day.html" class="view-text">Day</a>
+          <a href="/week.html" class="view-text">Week</a>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card">
+          <div class="card-body">
+            <div class="class-name">CSSE280</div>
+            <div class="class-time">9:00 AM - 10:50 AM</div>
+            <div class="class-location">O269</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="class-name">Free</div>
+            <div class="class-location">11:00 AM - 11:50 AM</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="class-name">CSSE352</div>
+            <div class="class-time">12:00 PM - 12:50 PM</div>
+            <div class="class-location">O259</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/popper.js"></script>
+  <script src="scripts/bootstrap-material-design.js"></script>
+  <script>$("body").bootstrapMaterialDesign();</script>
+  <script src="/__/firebase/7.18.0/firebase-app.js"></script>
+  <script src="/__/firebase/7.18.0/firebase-analytics.js"></script>
+  <script src="/__/firebase/7.18.0/firebase-auth.js"></script>
+  <script src="/__/firebase/7.18.0/firebase-firestore.js"></script>
+  <script src="/__/firebase/init.js"></script>
+  <script src="scripts/main.js"></script>
+</body>
+
+</html>
