@@ -1,5 +1,5 @@
 body {
-    background: #eeeeee;
+    background: #fff;
 }
 
 .navbar {
@@ -12,11 +12,24 @@ body {
     margin-right: 0;
     margin-left: 0;
     max-width: 100%;
+    padding: 0;
+}
+
+.now-page {
+    padding: 0px 15px;
+}
+
+.now-page {
+    padding: 0px 15px;
 }
 
 .now-page .card {
-    margin-bottom: 30px;
+    margin-bottom: 15px;
     border-radius: .5rem;
+}
+
+.now-page .card:last-of-type {
+    margin-bottom: 0;
 }
 
 .class-name {
@@ -30,17 +43,20 @@ body {
 
 .view-selector {
     display: flex;
-    flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    height: 100%;
+    width: 100%;
+    margin: 0px 0px 20px;
 }
 
 .view-selector .view-text {
     font-size: 1.5rem;
-    font-weight: bold;
     color: #000;
     width: min-content;
+}
+
+.view-selector .view-label {
+    font-weight: bold;
 }
 
 .view-selector .view-text.active {
@@ -51,7 +67,109 @@ body {
     text-decoration: none;
 }
 
+.day-selector-container {
+    display: flex;
+    justify-content: center;
+}
+
+.day-selector {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    padding: 5px 25px;
+    margin-bottom: 20px;
+    background-color: #E6E6E6;
+    border-radius: 100px;
+}
+
+.day-selector .day-text {
+    font-size: 1.5rem;
+    color: #000;
+    width: min-content;
+    cursor: pointer;
+}
+
+.day-selector .day-text.active {
+    background-color: #800000;
+    border-radius: 100px;
+    padding: 0px 8px;
+    color: #fff;
+}
+
+.day-row p {
+    margin-bottom: 0;
+}
+
 .navbar .btn-log-out, .navbar .btn-log-out:hover, .navbar .btn-log-out:active, .navbar .btn-log-out:focus {
     color: #800000;
     background-color: #fff;
+}
+
+.day-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px;
+}
+
+.day-row p {
+    font-size: 1.1rem;
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-right .oi {
+    font-size: 1.5rem;
+    margin-right: 15px;
+    cursor: pointer;
+}
+
+.navbar-right .oi:last-of-type {
+    margin-right: 0;
+}
+
+@media (min-width: 768px) {
+    .view-selector {
+        flex-direction: column;
+        height: 100%;
+        margin: 0;
+        height: 505px;
+    }
+
+    .day-selector {
+        flex-direction: column;
+        padding: 25px 5px;
+        height: 100%;
+        margin: 0;
+        min-height: 505px;
+        width: fit-content;
+        margin-right: 25px;
+    }
+
+    .day-border {
+        border-left: 1px solid rgba(0,0,0,.1);
+    }
+
+    .now-page .card {
+        margin-bottom: 30px;
+    }
+
+    .day-page {
+        padding-left: 15px;
+    }
+
+    .day-page.page-container {
+        margin-top: 56px;
+    }
+
+    .day-page .view-selector, .day-page .day-selector {
+        margin-top: 19px;
+    }
+
+    .navbar-right .oi:last-of-type {
+        margin-right: 10px;
+    }
 }

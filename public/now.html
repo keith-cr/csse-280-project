@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
   <link rel="stylesheet" href="styles/bootstrap-material-design.min.css">
+  <link rel="stylesheet" href="styles/open-iconic-bootstrap.css">
   <link rel="stylesheet" href="styles/main.css">
   <title>Now View | Rose Schedule</title>
 </head>
@@ -14,14 +15,14 @@
   <nav class="navbar navbar-dark fixed-top justify-content-between">
     <a class="navbar-brand" href="/now.html">John's Schedule</a>
     <div>
-      <button class="btn btn-log-out my-2 my-sm-0">Log Out</button>
+      <button class="btn btn-log-out my-2 my-sm-0 d-none d-md-inline-block">Log Out</button>
     </div>
   </nav>
   <div id="nowViewPage" class="now-page container page-container">
-    <div class="row">
-      <div class="col-1">
+    <div class="row no-gutters">
+      <div class="col-md-1">
         <div class="view-selector">
-          <div class="view-text">View</div>
+          <div class="view-text view-label">View:</div>
           <a href="/now.html" class="view-text active">Now</a>
           <a href="/day.html" class="view-text">Day</a>
           <a href="/week.html" class="view-text">Week</a>
@@ -50,7 +51,6 @@
         </div>
       </div>
     </div>
-    
   </div>
   <script src="scripts/jquery.min.js"></script>
   <script src="scripts/popper.js"></script>
