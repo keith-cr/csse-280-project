@@ -1,9 +1,18 @@
+:root {
+    --accent: #800000;
+    --accent-complement: white;
+    --background-primary: white;
+    --background-secondary: #E6E6E6;
+    --foreground-primary: black;
+    --foreground-secondary: black;
+}
+
 body {
-    background: #fff;
+    background: var(--background-primary);
 }
 
 .navbar {
-    background-color: #800000;
+    background-color: var(--accent);
     color: white;
 }
 
@@ -13,6 +22,14 @@ body {
     margin-left: 0;
     max-width: 100%;
     padding: 0;
+}
+
+.border-color {
+    border-color: var(--background-secondary);
+}
+
+.background-color {
+    background-color: var(--background-primary);
 }
 
 .now-page {
@@ -51,7 +68,7 @@ body {
 
 .view-selector .view-text {
     font-size: 1.5rem;
-    color: #000;
+    color: var(--foreground-primary);
     width: min-content;
 }
 
@@ -60,7 +77,7 @@ body {
 }
 
 .view-selector .view-text.active {
-    border-bottom: 2px solid #800000;
+    border-bottom: 2px solid var(--accent);
 }
 
 .view-selector .view-text:hover {
@@ -79,31 +96,32 @@ body {
     width: 90%;
     padding: 5px 25px;
     margin-bottom: 20px;
-    background-color: #E6E6E6;
+    background-color: var(--background-secondary);
     border-radius: 100px;
 }
 
 .day-selector .day-text {
     font-size: 1.5rem;
-    color: #000;
+    color: var(--foreground-primary);
     width: min-content;
     cursor: pointer;
 }
 
 .day-selector .day-text.active {
-    background-color: #800000;
+    background-color: var(--accent);
     border-radius: 100px;
     padding: 0px 8px;
-    color: #fff;
+    color: var(--accent-complement);
 }
 
 .day-row p {
     margin-bottom: 0;
+    color: var(--foreground-secondary);
 }
 
 .navbar .btn-log-out, .navbar .btn-log-out:hover, .navbar .btn-log-out:active, .navbar .btn-log-out:focus {
-    color: #800000;
-    background-color: #fff;
+    color: var(--accent);
+    background-color: var(--accent-complement);
 }
 
 .day-row {
@@ -131,6 +149,44 @@ body {
     margin-right: 0;
 }
 
+#week {
+    display: flex;
+    flex-direction: column;
+    
+    width: 100%;
+    height: max-content;
+
+    border-top: solid 1px var(--background-secondary);
+    border-left: 1px solid var(--background-secondary);
+}
+
+.week-day {
+    display: flex;
+    flex-direction: row;
+
+    width: 100%;
+    height: 48px;
+}
+
+.day-header {
+}
+
+.day-header, .time {
+    font-weight: bold;
+}
+
+.day-header, .time, .class-entry {
+    text-align: center;
+    line-height: 48px;
+
+    color: var(--foreground-primary);
+
+    width: calc(100% / 6);
+
+    border-bottom: solid 1px var(--background-secondary);
+    border-right: 1px solid var(--background-secondary);
+}
+
 @media (min-width: 768px) {
     .view-selector {
         flex-direction: column;
@@ -150,7 +206,7 @@ body {
     }
 
     .day-border {
-        border-left: 1px solid rgba(0,0,0,.1);
+        border-left: 1px solid var(--background-secondary);
     }
 
     .now-page .card {
