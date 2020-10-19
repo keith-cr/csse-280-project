@@ -177,7 +177,6 @@ body {
 
 .day-header, .time, .class-entry {
     text-align: center;
-    line-height: 48px;
 
     color: var(--foreground-primary);
 
@@ -185,6 +184,14 @@ body {
 
     border-bottom: solid 1px var(--background-secondary);
     border-right: 1px solid var(--background-secondary);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.class-entry {
+    font-size: 0.8rem;
 }
 
 @media (min-width: 768px) {
@@ -227,5 +234,9 @@ body {
 
     .navbar-right .oi:last-of-type {
         margin-right: 10px;
+    }
+
+    .class-entry {
+        font-size: 1rem;
     }
 }
