@@ -7,6 +7,10 @@
     --foreground-secondary: black;
 }
 
+html, body {
+    height: 100%;
+}
+
 body {
     background: var(--background-primary);
 }
@@ -191,6 +195,68 @@ body {
     font-size: 0.8rem;
 }
 
+#loginPage {
+    margin: 0;
+    height: 100%;
+}
+
+#loginDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 40%;
+
+    background-color: var(--accent);
+}
+
+#loginHeader {
+    width: 75%;
+
+    font-size: 4em;
+    text-align: center;
+
+    color: var(--accent-complement);
+}
+
+#loginButton,
+#loginButton:hover,
+#loginButton:active {
+    width: 75%;
+
+    background-color: var(--background-secondary);
+    color: var(--accent);
+}
+
+#infoHeader {
+    margin: 0.75em auto;
+
+    font-size: 1.5em;
+    text-align: center;
+    color: var(--foreground-primary);
+}
+
+#infoSubDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#calendarImg {
+    width: 60%;
+}
+
+#info {
+    margin: auto;
+    margin-top: 0.5em;
+    width: 65%;
+
+    text-align: center;
+    color: var(--foreground-primary);
+}
+
 @media (min-width: 768px) {
     .view-selector {
         flex-direction: column;
@@ -235,5 +301,39 @@ body {
 
     .class-entry {
         font-size: 1rem;
+    }
+
+    #loginHeader {
+        font-size: 5em;
+    }
+
+    #loginButton,
+    #loginButton:hover,
+    #loginButton:active {
+        width: 50%;
+    }
+
+    #infoHeader {
+        font-size: 3em;
+    }
+
+    #infoSubDiv {
+        flex-direction: row;
+    }
+    
+    #calendarImg {
+        width: 40%;
+    }
+
+    #info {
+        margin-top: auto;
+        margin-bottom: auto;
+        margin-left: 1em;
+        margin-right: 0em;
+        width: 40%;
+
+        font-size: 2em;
+        text-align: center;
+        color: var(--foreground-primary);
     }
 }
