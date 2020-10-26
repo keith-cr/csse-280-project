@@ -36,8 +36,8 @@ body {
     padding: 0px 15px;
 }
 
-.now-page {
-    padding: 0px 15px;
+.import-page {
+    padding: 0px 30px;
 }
 
 .now-page .card {
@@ -160,7 +160,7 @@ body {
     border-left: 1px solid var(--background-secondary);
 }
 
-.week-day {
+.week-day, .week-day-header {
     display: flex;
     flex-direction: row;
 
@@ -191,6 +191,46 @@ body {
     font-size: 0.8rem;
 }
 
+.import-button, .import-button:hover, .import-button:active, .import-button:focus, .import-button:active:focus {
+    background-color: #eee;
+    color: #800000;
+}
+
+.import-button {
+    margin-bottom: 40px;
+}
+
+.skip-import-button, .skip-import-button:hover, .skip-import-button:active, .skip-import-button:focus, .skip-import-button:active:focus {
+    background-color: #800000;
+    color: #fff;
+}
+
+.btn.btn-lg.import-button, .btn.btn-lg.skip-import-button {
+    padding: 1rem .5rem;
+    font-size: 1.5rem;
+    line-height: 1.5;
+    border-radius: .3rem;
+}
+
+.import-page .instructions {
+    font-size: 2rem;
+    margin: 20px 0px;
+}
+
+.import-page .instructions-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+a, a:hover, a:focus {
+    color: #800000;
+}
+
+#fileInput {
+    display: none;
+}
+
 @media (min-width: 768px) {
     .view-selector {
         flex-direction: column;
@@ -205,7 +245,7 @@ body {
         height: 100%;
         margin: 0;
         min-height: 505px;
-        width: fit-content;
+        width: 50px;
         margin-right: 25px;
     }
 
@@ -235,5 +275,10 @@ body {
 
     .class-entry {
         font-size: 1rem;
+    }
+
+    .import-page .instructions {
+        font-size: 2.25rem;
+        margin: 50px 0px;
     }
 }
