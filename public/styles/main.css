@@ -114,24 +114,41 @@ body {
     color: var(--accent-complement);
 }
 
-.day-row p {
-    margin-bottom: 0;
-    color: var(--foreground-secondary);
-}
-
 .navbar .btn-log-out, .navbar .btn-log-out:hover, .navbar .btn-log-out:active, .navbar .btn-log-out:focus {
     color: var(--accent);
     background-color: var(--accent-complement);
 }
 
-.day-row {
+.period-row:first-of-type {
     display: flex;
     justify-content: space-between;
-    margin: 10px;
+    margin: 0px 10px 10px 10px;
 }
 
-.day-row p {
+.period-row:last-of-type {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 10px 0px 10px;
+}
+
+.period-row p {
     font-size: 1.1rem;
+    margin-bottom: 0;
+}
+
+hr.border-color {
+    margin: 0;
+}
+
+.period.current-period {
+    background-color: var(--accent);
+    color: var(--accent-complement);
+    box-shadow: 0px 4px 4px 0px #000000 25%;
+}
+
+.period {
+    padding: 10px 0px;
+    border-bottom: 1px solid var(--background-secondary);
 }
 
 .navbar-right {
@@ -156,8 +173,8 @@ body {
     width: 100%;
     height: max-content;
 
-    border-top: solid 1px var(--background-secondary);
-    border-left: 1px solid var(--background-secondary);
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+    border-left: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 .week-day, .week-day-header {
@@ -179,8 +196,8 @@ body {
 
     width: calc(100% / 6);
 
-    border-bottom: solid 1px var(--background-secondary);
-    border-right: 1px solid var(--background-secondary);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    border-right: 1px solid rgba(0, 0, 0, 0.12);
 
     display: flex;
     justify-content: center;
@@ -189,6 +206,15 @@ body {
 
 .class-entry {
     font-size: 0.8rem;
+}
+
+.class-entry.current-day, .class-entry.current-period {
+    background-color: rgba(128, 0, 0, .24);
+}
+
+.class-entry.current-day.current-period {
+    background-color: var(--accent);
+    color: #fff;
 }
 
 .import-button, .import-button:hover, .import-button:active, .import-button:focus, .import-button:active:focus {

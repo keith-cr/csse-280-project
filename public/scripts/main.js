@@ -421,13 +421,57 @@ rhit.ImportPageController = class {
         }
       }
     }
-
-		this.importSchedule(schedule);
+    
+    this.importSchedule(schedule);
 	}
 }
 
 rhit.NowViewPageController = class {
+	constructor() {
+		rhit.scheduleManager = new rhit.ScheduleManager(uid);
+		rhit.scheduleManager.beginListening(() => {
+			this.updateView();
+		});
+	}
 
+	updateView() {
+    const currPeriod = rhit.scheduleManager.getCurrentPeriodExtended();
+    const freePeriod = rhit.scheduleManager.getNextFreePeriodExtended();
+    const nextPeriod = rhit.scheduleManager.getNextPeriodExtended();
+    const currPeriodCard = document.querySelector('.current-period-card');
+    const freePeriodCard = document.querySelector('.free-period-card');
+    const nextPeriodCard = document.querySelector('.next-period-card');
+    if (currPeriod != null && currPeriod.name === 'Free') {
+      this.hideCard(currPeriodCard);
+    } else {
+      this.updateCard(currPeriodCard, currPeriod);
+    }
+    this.updateCard(freePeriodCard, freePeriod);
+    if (nextPeriod != null && nextPeriod.name === 'Free') {
+      this.hideCard(nextPeriodCard);
+    } else {
+      this.updateCard(nextPeriodCard, nextPeriod);
+    }
+  }
+  
+  updateCard(card, period) {
+    if (period == null) {
+      this.hideCard(card);
+    } else {
+      card.querySelector('.class-name').innerText = period.name;
+      card.querySelector('.class-location').innerText = period.location;
+      card.querySelector('.class-time').innerText = `${period.startTime} - ${period.endTime}`;  
+      this.showCard(card);
+    }
+  }
+
+  hideCard(card) {
+    card.classList.add('d-none');
+  }
+
+  showCard(card) {
+    card.classList.remove('d-none');
+  }
 }
 
 rhit.DayViewPageController = class {
@@ -455,7 +499,7 @@ rhit.DayViewPageController = class {
 			}
 		});
 
-		const periodElems = document.querySelectorAll('.day');
+		const periodElems = document.querySelectorAll('.period');
 		const currDay = new Date().getDay()-1;
 		const currPeriod = rhit.scheduleManager.getCurrentPeriodIndex();
 
@@ -472,7 +516,7 @@ rhit.DayViewPageController = class {
 	}
 }
 
-rhit.WeekViewController = class {
+rhit.WeekViewPageController = class {
 	constructor() {
 		rhit.scheduleManager = new rhit.ScheduleManager(uid);
 		rhit.scheduleManager.beginListening(() => {
@@ -481,15 +525,31 @@ rhit.WeekViewController = class {
 	}
 
 	updateView() {
+		const currPeriod = rhit.scheduleManager.getCurrentPeriodIndex();
+		const currDay = rhit.scheduleManager.getCurrentDayIndex();
 		const hourElems = document.querySelectorAll('.week-day');
 
 		for (let dayIndex = 0; dayIndex < rhit.scheduleManager.getDaysLength(); dayIndex++) {
 			for (let periodIndex = 0; periodIndex < rhit.scheduleManager.getPeriodsLength(); periodIndex++) {
 				const period = rhit.scheduleManager.getPeriod(dayIndex, periodIndex);
+				const dayElems = hourElems[periodIndex].querySelectorAll('.class-entry');
+
+				if (periodIndex === currPeriod) {
+					dayElems[dayIndex].classList.add('current-period');
+				} else {
+					dayElems[dayIndex].classList.remove('current-period');
+				}
+
+				if (dayIndex === currDay) {
+					dayElems[dayIndex].classList.add('current-day');
+				} else {
+					dayElems[dayIndex].classList.remove('current-day');
+				}
+
 				if (period.name === 'Free') {
 					continue;
 				}
-				const dayElems = hourElems[periodIndex].querySelectorAll('.class-entry');
+
 				dayElems[dayIndex].innerText = period.location ? `${period.name} in ${period.location}` : period.name;
 			}
 		}
@@ -530,15 +590,47 @@ rhit.ScheduleManager = class {
 				const startTime = new Date();
 				startTime.setHours(Number(period.startTime.split(':')[0]));
 				startTime.setMinutes(Number(period.startTime.split(':')[1].replace(/\D/g, '')));
-				if (period.startTime.toLowerCase().includes('pm')) {
+				if (period.startTime.toLowerCase().includes('pm') && startTime.getHours() != 12) {
 					startTime.setHours(startTime.getHours() + 12);
 				}
 				const endTime = new Date();
 				endTime.setHours(Number(period.endTime.split(':')[0]));
 				endTime.setMinutes(Number(period.endTime.split(':')[1].replace(/\D/g, '')));
-				if (period.endTime.toLowerCase().includes('pm')) {
+				if (period.endTime.toLowerCase().includes('pm') && endTime.getHours() != 12) {
 					endTime.setHours(endTime.getHours() + 12);
 				}
+				if (startTime <= currTime && currTime <= endTime) {
+					return i;
+				}
+			}
+		}
+		return -1;
+	}
+
+	getClosestPeriodIndex() {
+		if (this.hasSchedule()) {
+			const currTime = new Date();
+			const period = this._schedule.days[0].periods[0];
+			const startTime = new Date();
+			startTime.setHours(Number(period.startTime.split(':')[0]) && startTime.getHours() != 12);
+			startTime.setMinutes(Number(period.startTime.split(':')[1].replace(/\D/g, '')));
+			if (startTime > currTime) {
+				return 0;
+			}
+			for (let i = 0; i < this._schedule.days[0].periods.length; i++) {
+				const period = this._schedule.days[0].periods[i];
+				const startTime = new Date();
+				startTime.setHours(Number(period.startTime.split(':')[0])-1);
+				startTime.setMinutes(Number(period.endTime.split(':')[1].replace(/\D/g, '')));
+				if (period.startTime.toLowerCase().includes('pm') && startTime.getHours() != 11) {
+					startTime.setHours(startTime.getHours() + 12);
+				}
+				const endTime = new Date();
+				endTime.setHours(Number(period.endTime.split(':')[0]));
+				endTime.setMinutes(Number(period.endTime.split(':')[1].replace(/\D/g, '')));
+				if (period.endTime.toLowerCase().includes('pm') && endTime.getHours() != 12) {
+					endTime.setHours(endTime.getHours() + 12);
+        }
 				if (startTime <= currTime && currTime <= endTime) {
 					return i;
 				}
@@ -551,8 +643,13 @@ rhit.ScheduleManager = class {
 		let day = new Date().getDay();
 		if (day === 0 || day === 6) {
 			return 0;
-		}
+    }
 		return day-1;
+	}
+
+	isWeekend() {
+		let day = new Date().getDay();
+		return day === 0 || day === 6;
 	}
 
 	getPeriod(dayIndex, periodIndex) {
@@ -577,6 +674,121 @@ rhit.ScheduleManager = class {
 	hasSchedule() {
 		return !!this._schedule;
 	}
+
+	getCurrentPeriodExtended() {
+		if (this.hasSchedule()) {
+			let currDay = this.getCurrentDayIndex();
+			let currPeriod = this.getClosestPeriodIndex();
+			if (this.isWeekend()) {
+				currDay = 0;
+				currPeriod = 0;
+			} else if (currPeriod === -1) {
+				currDay = currDay+1;
+				if (currDay === 5) {
+					currDay = 0;
+				}
+				currPeriod = 0;
+			}
+
+			let day = this._schedule.days[currDay];
+
+			let period = { ...day.periods[currPeriod] };
+			let setStart = false;
+			for (let i = 0; i < day.periods.length; i++) {
+				if (i === currPeriod) {
+					continue;
+				} else if (day.periods[i].name === period.name && day.periods[i].location === period.location) {
+					if (i < currPeriod && !setStart) {
+						period.startTime = day.periods[i].startTime;
+						setStart = true;
+					} else if (i > currPeriod) {
+						period.endTime = day.periods[i].endTime;
+					}
+				}
+			}
+			return period;
+		}
+		return null;
+	}
+
+	getNextFreePeriodExtended() {
+		if (this.hasSchedule()) {
+			let currDay = this.getCurrentDayIndex();
+      let currPeriod = this.getClosestPeriodIndex();
+			if (this.isWeekend()) {
+				currDay = 0;
+				currPeriod = 0;
+			} else if (currPeriod === -1) {
+				currDay = currDay+1;
+				if (currDay === 5) {
+					currDay = 0;
+				}
+				currPeriod = 0;
+			}
+
+			let day = this._schedule.days[currDay];
+
+			let period = { name: 'Free', location: '', startTime: '', endTime: ''};
+			let setStart = false;
+			for (let i = currPeriod; i < day.periods.length; i++) {
+				if (day.periods[i].name === 'Free') {
+					if (!setStart) {
+						period.startTime = day.periods[i].startTime;
+						period.endTime = day.periods[i].endTime;
+						setStart = true;
+					} else {
+						period.endTime = day.periods[i].endTime;
+					}
+				} else if (i !== currPeriod && !(day.periods[i].name === day.periods[currPeriod].name && day.periods[i].location === day.periods[currPeriod].location)) {
+					break;
+				}
+			}
+			if (period.startTime === '' || period.endTime === '') {
+				return null;
+			}
+			return period;
+		}
+		return null;
+  }
+  
+  getNextPeriodExtended() {
+		if (this.hasSchedule()) {
+			let currDay = this.getCurrentDayIndex();
+			let currPeriod = this.getClosestPeriodIndex();
+			if (this.isWeekend()) {
+				currDay = 0;
+				currPeriod = 0;
+			} else if (currPeriod === -1) {
+				currDay = currDay+1;
+				if (currDay === 5) {
+					currDay = 0;
+				}
+				currPeriod = 0;
+      }
+
+			let day = this._schedule.days[currDay];
+
+			let period = null;
+			let setStart = false;
+			for (let i = currPeriod; i < day.periods.length; i++) {
+        if (i === currPeriod || day.periods[i].name === 'Free' 
+          || (day.periods[i].name === day.periods[currPeriod].name && day.periods[i].location === day.periods[currPeriod].location)) {
+					continue;
+        }
+        
+				if (!setStart) {
+          period = { ...day.periods[i] };
+          setStart = true;
+        } else if (period.name === day.periods[i].name && period.location === day.periods[i].location) {
+          period.endTime = day.periods[i].endTime;
+				} else {
+					break;
+				}
+			}
+			return period;
+		}
+		return null;
+	}
 }
 
 rhit.initializePage = function() {
@@ -586,7 +798,9 @@ rhit.initializePage = function() {
 	} else if (document.querySelector('#dayViewPage')) {
 		new rhit.DayViewPageController();
 	} else if (document.querySelector('#weekViewPage')) {
-		new rhit.WeekViewController();
+		new rhit.WeekViewPageController();
+	} else if (document.querySelector('#nowViewPage')) {
+		new rhit.NowViewPageController();
 	}
 };
 
