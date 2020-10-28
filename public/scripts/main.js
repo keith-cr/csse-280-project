@@ -341,9 +341,7 @@ rhit.AuthManager = class {
 	}
 
 	signOut() {
-		firebase.auth().signOut().catch(() => {
-			console.log("Signed out");
-		});
+		firebase.auth().signOut();
 	}
 
 	get isAuthenticated() {
@@ -601,7 +599,6 @@ rhit.WeekViewPageController = class {
 
 rhit.ScheduleManager = class {
 	constructor(uid) {
-    console.log(uid);
 		this._uid = uid;
 		this._schedule = null;
 		this._unsubscribe = null;
@@ -844,6 +841,12 @@ rhit.checkForRedirects = () => {
 }
 
 rhit.initializePage = function() {
+  if (document.querySelector('.btn-log-out')) {
+    document.querySelector('.btn-log-out').addEventListener('click', () => {
+      rhit.authManager.signOut();
+    });
+  }
+
 	const urlParams = new URLSearchParams(window.location.search);
 	if (document.querySelector('#importPage')) {
 		new rhit.ImportPageController();
