@@ -9,26 +9,22 @@
   <link rel="stylesheet" href="styles/open-iconic-bootstrap.css">
   <link rel="stylesheet" href="styles/main.css">
   <title>Rose Schedule</title>
-  <style>
-    html, body {
-      height: 100%;
-    }
-  </style>
 </head>
 
 <body>
-  <div id="loginPage" class="container page-container">
-    <div id="loginDiv">
-      <p id="loginHeader">Rose Schedule</p>
-      <button id="loginButton" class="btn">LOGIN</button>
-    </div>
-    <div id="infoDiv">
-      <p id="infoHeader">A Better Schedule Lookup Tool</p>
-      <div id="infoSubDiv">
-        <img id="calendarImg" src="https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Finfomagx.com%2Fwp-content%2Fuploads%2F2019%2F07%2FCalendar-September-2019-Template.jpg&f=1&nofb=1" alt="calendar" />
-        <p id="info">Rose Schedule allows you to import your Rose-Hulman class schedule from bannerweb and presents a simplified now, day and week view, instantly available  and optimized for whatever device your viewing it on.</p>
+  <nav class="navbar navbar-dark fixed-top">
+    <a class="navbar-brand" href="#">Rose Schedule</a>
+  </nav>
+  <div id="importPage" class="import-page container page-container">
+    <div class="instructions-container">
+      <div class="instructions">
+        <p>1. Export your schedule from <a href="https://prodwebxe-hv.rose-hulman.edu/regweb-cgi/reg-sched.pl" target="_blank">Schedule Lookup</a></p>
+        <p>2. Click import and select the ICS file</p>  
       </div>
     </div>
+    <button type="button" id="importButton" class="btn btn-lg btn-block btn-raised import-button">Import Schedule</button>
+    <input id="fileInput" type="file" name="name" multiple="false" accept="text/calendar" />
+    <button type="button" id="skipButton" class="btn btn-lg btn-block btn-raised skip-import-button">Skip Import</button>
   </div>
   <script src="scripts/jquery.min.js"></script>
   <script src="scripts/popper.js"></script>
@@ -39,7 +35,7 @@
   <script src="/__/firebase/7.18.0/firebase-auth.js"></script>
   <script src="/__/firebase/7.18.0/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="scripts/rosefire.min.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/ical.js@1.4.0/build/ical.js"></script>
   <script src="scripts/main.js"></script>
 </body>
 
