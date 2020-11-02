@@ -3,7 +3,7 @@ var rhit = rhit || {};
 rhit.authManager = null;
 
 rhit.FB_COLLECTION_SCHEDULE = 'schedule';
-rhit.FB_COLLECTION_USER     = 'user';
+rhit.FB_COLLECTION_USER = 'user';
 
 rhit.defaultSchedule = {
   days: [{
@@ -316,13 +316,30 @@ rhit.LoginPageController = class {
 
 rhit.AuthManager = class {
 	constructor() {
-		this._user = null;
+    this._user = null;
+    this._userData = null;
 	}
 
 	beginListening(changeListener) {
 		firebase.auth().onAuthStateChanged((user) => {
-			this._user = user;
-			changeListener();
+      this._user = user;
+      if (this.isAuthenticated) {
+        firebase.firestore().collection(rhit.FB_COLLECTION_USER).doc(this.uid)
+          .onSnapshot((doc) => {
+            if (!doc.exists) {
+              firebase.firestore().collection(rhit.FB_COLLECTION_USER).doc(this.uid).set({ displayName: this.uid });
+            } else {
+              this._userData = doc.data();
+              changeListener();
+            }
+          }, (error) => {
+            // TODO: better error handling
+            console.error(error);
+          });
+      } else {
+        this._userData = null;
+        changeListener();
+      }
 		});
 	}
 
@@ -343,9 +360,7 @@ rhit.AuthManager = class {
 	}
 
 	signOut() {
-		firebase.auth().signOut().catch(() => {
-			console.log("Signed out");
-		});
+		firebase.auth().signOut();
 	}
 
 	get isAuthenticated() {
@@ -354,6 +369,10 @@ rhit.AuthManager = class {
 
 	get uid() {
     return this._user.uid;
+  }
+
+  get displayName() {
+    return this._userData == null ? '' : this._userData.displayName;
   }
 }
 
@@ -583,7 +602,8 @@ rhit.WeekViewPageController = class {
 
 	updateView() {
 		const currPeriod = rhit.scheduleManager.getCurrentPeriodIndex();
-		const currDay = rhit.scheduleManager.getCurrentDayIndex();
+    const currDay = rhit.scheduleManager.getCurrentDayIndex();
+    const isWeekend = rhit.scheduleManager.isWeekend();
 		const hourElems = document.querySelectorAll('.week-day');
 
 		for (let dayIndex = 0; dayIndex < rhit.scheduleManager.getDaysLength(); dayIndex++) {
@@ -597,7 +617,7 @@ rhit.WeekViewPageController = class {
 					dayElems[dayIndex].classList.remove('current-period');
 				}
 
-				if (dayIndex === currDay) {
+				if (dayIndex === currDay && !isWeekend) {
 					dayElems[dayIndex].classList.add('current-day');
 				} else {
 					dayElems[dayIndex].classList.remove('current-day');
@@ -615,7 +635,6 @@ rhit.WeekViewPageController = class {
 
 rhit.ScheduleManager = class {
 	constructor(uid) {
-    console.log(uid);
 		this._uid = uid;
 		this._schedule = null;
 		this._unsubscribe = null;
@@ -928,6 +947,22 @@ rhit.checkForRedirects = () => {
 }
 
 rhit.initializePage = function() {
+  if (document.querySelector('.btn-log-out')) {
+    document.querySelector('.btn-log-out').addEventListener('click', () => {
+      rhit.authManager.signOut();
+    });
+  }
+
+  if (document.querySelector('.navbar-name')) {
+    // TODO: Update with name of selected person's schedule, not just current user
+    const displayName = rhit.authManager.displayName;
+    if (displayName) {
+      document.querySelector('.navbar-name').innerText = displayName[displayName.length - 1].toLowerCase() === 's' 
+        ? `${displayName}' Schedule` 
+        : `${displayName}'s Schedule`;
+    }
+  }
+
 	const urlParams = new URLSearchParams(window.location.search);
 	if (document.querySelector('#importPage')) {
 		new rhit.ImportPageController();
