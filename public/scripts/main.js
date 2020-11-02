@@ -476,7 +476,11 @@ rhit.NowViewPageController = class {
 		rhit.scheduleManager = new rhit.ScheduleManager(rhit.authManager.uid);
 		rhit.scheduleManager.beginListening(() => {
 			this.updateView();
-		});
+    });
+    
+    document.querySelector("#settings").addEventListener("click", (event) => {
+      window.location.href = "/settings.html";
+    });
 	}
 
 	updateView() {
@@ -533,6 +537,10 @@ rhit.DayViewPageController = class {
 				this.updateView();
 			});
 		});
+    
+    document.querySelector("#settings").addEventListener("click", (event) => {
+      window.location.href = "/settings.html";
+    });
 	}
 
 	updateView() {
@@ -567,6 +575,10 @@ rhit.WeekViewPageController = class {
 		rhit.scheduleManager.beginListening(() => {
 			this.updateView();
 		});
+    
+    document.querySelector("#settings").addEventListener("click", (event) => {
+      window.location.href = "/settings.html";
+    });
 	}
 
 	updateView() {
