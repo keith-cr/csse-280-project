@@ -3,6 +3,7 @@ var rhit = rhit || {};
 rhit.authManager = null;
 
 rhit.FB_COLLECTION_SCHEDULE = 'schedule';
+rhit.FB_COLLECTION_USER     = 'user';
 
 rhit.defaultSchedule = {
   days: [{
@@ -303,6 +304,7 @@ rhit.defaultSchedule = {
 };
 
 rhit.scheduleManager = null;
+rhit.settingsManager = null;
 
 rhit.LoginPageController = class {
 	constructor() {
@@ -835,6 +837,76 @@ rhit.ScheduleManager = class {
 	}
 }
 
+rhit.SettingsPageController = class {
+  constructor() {
+    rhit.settingsManager = new rhit.SettingsManager(rhit.authManager.uid);
+    rhit.settingsManager.beginListening(this.updateView.bind(this));
+
+    document.querySelector("#close").addEventListener("click", (event) => {
+      window.history.back();
+    });
+
+    document.querySelector("#importScheduleButton").addEventListener("click", (event) => {
+      window.location.href = "import.html";
+    });
+
+    document.querySelector("#clearScheduleButton").addEventListener("click", (event) => {
+      firebase.firestore().collection(rhit.FB_COLLECTION_SCHEDULE).doc(rhit.authManager.uid).set(rhit.defaultSchedule).catch((error) => {
+        console.error('Error writing document: ', error);
+      });
+    });
+
+    let nameField = document.querySelector("#name");
+    nameField.addEventListener("keydown", (event) => {
+      if (event.keyCode === 13) { // Enter key
+        nameField.blur();
+      } else if (event.keyCode === 27) { // Escape key
+        nameField.value = rhit.settingsManager.name;
+        nameField.blur();
+      }
+    });
+
+    nameField.addEventListener("focusout", (event) => {
+      rhit.settingsManager.setName(nameField.value);
+    });
+  }
+
+  updateView() {
+    document.querySelector("#name").value = rhit.settingsManager.name;
+  }
+}
+
+rhit.SettingsManager = class {
+  constructor(uid) {
+    this._uid    = uid;
+    this._name   = "Jane Doe";
+    this._shared = [];
+  }
+
+  beginListening(changeListener) {
+		this._unsubscribe = firebase.firestore().collection(rhit.FB_COLLECTION_USER).doc(this._uid)
+			.onSnapshot((doc) => {
+				if (!doc.exists) {
+          this.setName(this._uid);
+				} else {
+          this._name = doc.data().displayName;
+				}
+			  changeListener();
+			}, (error) => {
+				console.error(error);
+			});
+  }
+
+  setName(name) {
+    this._name = name;
+    firebase.firestore().collection(rhit.FB_COLLECTION_USER).doc(this._uid).set({ displayName: this._name }).catch((error) => { console.error(error); });
+  }
+
+  get name() {
+    return this._name;
+  }
+}
+
 rhit.checkForRedirects = () => {
 	if (document.querySelector("#loginPage") && rhit.authManager.isAuthenticated) {
 		window.location.href = "/now.html";
@@ -855,6 +927,8 @@ rhit.initializePage = function() {
 		new rhit.NowViewPageController();
 	} else if (document.querySelector("#loginPage")) {
 		new rhit.LoginPageController();
+  } else if (document.querySelector("#settingsPage")) {
+    new rhit.SettingsPageController();
   }
 };
 

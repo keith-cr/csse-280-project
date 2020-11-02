@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
+  <link rel="stylesheet" href="styles/bootstrap-material-design.min.css">
+  <link rel="stylesheet" href="styles/open-iconic-bootstrap.css">
+  <link rel="stylesheet" href="styles/main.css">
+  <title>Settings | Rose Schedule</title>
+</head>
+
+<body>
+  <nav class="navbar navbar-dark fixed-top justify-content-between">
+    <a class="navbar-brand">Settings</a>
+    <div class="navbar-right">
+      <span id="close" class="oi oi-x"></span>
+    </div>
+  </nav>
+  <div id="settingsPage" class="container page-container">
+    <p class="settingsHeader">Profile</p>
+    <p class="settingsSubheader">Name</p>
+    <input type="text" class="form-control" id="name" />
+    <p class="settingsHeader">Schedule</p>
+    <div id="scheduleButtons">
+      <button id="importScheduleButton" class="btn btn-raised">Import Schedule</button>
+      <button id="clearScheduleButton" class="btn btn-raised">Clear Schedule</button>
+    </div>
+    <p class="settingsHeader">Shared With</p>
+    <div class="bmd-form-group bmd-collapse-inline pull-xs-right">
+      <i class="material-icons search-icon">search</i>
+      <input class="form-control" type="text" id="search" placeholder="Search to share with user">
+    </div>
+    <div class="shared-users">
+      <div class="shared-user-card">
+        <div class="shared-text">
+          <p class="shared-username">Bob Robertson</p>
+          <p class="shared-email">robertsonb@rose-hulman.edu</p>
+        </div>
+        <div class="remove-shared oi oi-circle-x"></div>
+      </div>
+      <div class="shared-user-card">
+        <div class="shared-text">
+          <p class="shared-username">Steve Stevenson</p>
+          <p class="shared-email">stevensons@rose-hulman.edu</p>
+        </div>
+        <div class="remove-shared oi oi-circle-x"></div>
+      </div>
+    </div>
+  </div>
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/popper.js"></script>
+  <script src="scripts/bootstrap-material-design.js"></script>
+  <script>$("body").bootstrapMaterialDesign();</script>
+  <script src="/__/firebase/7.18.0/firebase-app.js"></script>
+  <script src="/__/firebase/7.18.0/firebase-analytics.js"></script>
+  <script src="/__/firebase/7.18.0/firebase-auth.js"></script>
+  <script src="/__/firebase/7.18.0/firebase-firestore.js"></script>
+  <script src="/__/firebase/init.js"></script>
+  <script src="scripts/main.js"></script>
+</body>
+
+</html>
