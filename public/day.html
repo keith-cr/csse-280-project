@@ -16,7 +16,8 @@
     <a class="navbar-brand navbar-name" href="/now.html">Rose Schedule</a>
     <div class="navbar-right">
       <div class="navbar-actions">
-        <span class="oi oi-pencil"></span>
+        <span class="oi oi-pencil edit-button"></span>
+        <span class="oi oi-check save-button d-none"></span>
         <span id="settings" class="oi oi-cog"></span>
         <button class="btn btn-log-out my-2 my-sm-0 d-none d-md-inline-block">Log Out</button>  
       </div>
@@ -45,91 +46,235 @@
       </div>
       <div class="col day-border">
         <div class="period">
-          <div class="period-row">
+          <div class="period-row pr-top pr-text">
             <p>Free</p>
             <p></p>
           </div>
-          <div class="period-row">
+          <div class="period-row pr-middle pr-check d-none">
+            <div class="switch">
+              <label>
+                <input class="period-free-checkbox" type="checkbox">
+                Free
+              </label>
+            </div>
+          </div>
+          <div class="period-row pr-middle pr-input d-none">
+            <div class="form-group">
+              <input type="text" class="form-control period-name-input">
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control period-location-input">
+            </div>
+          </div>
+          <div class="period-row pr-bottom">
             <p>8:00 AM</p>
             <p>8:50 AM</p>
           </div>  
         </div>
         <div class="period">
-          <div class="period-row">
+          <div class="period-row pr-top pr-text">
             <p>Free</p>
             <p></p>
           </div>
-          <div class="period-row">
+          <div class="period-row pr-top pr-check d-none">
+            <div class="switch">
+              <label>
+                <input class="period-free-checkbox" type="checkbox">
+                Free
+              </label>
+            </div>
+          </div>
+          <div class="period-row pr-middle pr-input d-none">
+            <div class="form-group">
+              <input type="text" class="form-control period-name-input">
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control period-location-input">
+            </div>
+          </div>
+          <div class="period-row pr-bottom">
             <p>9:00 AM</p>
             <p>9:50 AM</p>
           </div>  
         </div>
         <div class="period">
-          <div class="period-row">
+          <div class="period-row pr-top pr-text">
             <p>Free</p>
             <p></p>
           </div>
-          <div class="period-row">
+          <div class="period-row pr-top pr-check d-none">
+            <div class="switch">
+              <label>
+                <input class="period-free-checkbox" type="checkbox">
+                Free
+              </label>
+            </div>
+          </div>
+          <div class="period-row pr-middle pr-input d-none">
+            <div class="form-group">
+              <input type="text" class="form-control period-name-input">
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control period-location-input">
+            </div>
+          </div>
+          <div class="period-row pr-bottom">
             <p>10:00 AM</p>
             <p>10:50 AM</p>
           </div>  
         </div>
         <div class="period">
-          <div class="period-row">
+          <div class="period-row pr-top pr-text">
             <p>Free</p>
             <p></p>
           </div>
-          <div class="period-row">
+          <div class="period-row pr-top pr-check d-none">
+            <div class="switch">
+              <label>
+                <input class="period-free-checkbox" type="checkbox">
+                Free
+              </label>
+            </div>
+          </div>
+          <div class="period-row pr-middle pr-input d-none">
+            <div class="form-group">
+              <input type="text" class="form-control period-name-input">
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control period-location-input">
+            </div>
+          </div>
+          <div class="period-row pr-bottom">
             <p>11:00 AM</p>
             <p>11:50 AM</p>
           </div>  
         </div>
         <div class="period">
-          <div class="period-row">
+          <div class="period-row pr-top pr-text">
             <p>Free</p>
             <p></p>
           </div>
-          <div class="period-row">
+          <div class="period-row pr-top pr-check d-none">
+            <div class="switch">
+              <label>
+                <input class="period-free-checkbox" type="checkbox">
+                Free
+              </label>
+            </div>
+          </div>
+          <div class="period-row pr-middle pr-input d-none">
+            <div class="form-group">
+              <input type="text" class="form-control period-name-input">
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control period-location-input">
+            </div>
+          </div>
+          <div class="period-row pr-bottom">
             <p>12:00 PM</p>
             <p>12:50 PM</p>
           </div>  
         </div>
         <div class="period">
-          <div class="period-row">
+          <div class="period-row pr-top pr-text">
             <p>Free</p>
             <p></p>
           </div>
-          <div class="period-row">
+          <div class="period-row pr-top pr-check d-none">
+            <div class="switch">
+              <label>
+                <input class="period-free-checkbox" type="checkbox">
+                Free
+              </label>
+            </div>
+          </div>
+          <div class="period-row pr-middle pr-input d-none">
+            <div class="form-group">
+              <input type="text" class="form-control period-name-input">
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control period-location-input">
+            </div>
+          </div>
+          <div class="period-row pr-bottom">
             <p>1:00 PM</p>
             <p>1:50 PM</p>
           </div>  
         </div>
         <div class="period">
-          <div class="period-row">
+          <div class="period-row pr-top pr-text">
             <p>Free</p>
             <p></p>
           </div>
-          <div class="period-row">
+          <div class="period-row pr-top pr-check d-none">
+            <div class="switch">
+              <label>
+                <input class="period-free-checkbox" type="checkbox">
+                Free
+              </label>
+            </div>
+          </div>
+          <div class="period-row pr-middle pr-input d-none">
+            <div class="form-group">
+              <input type="text" class="form-control period-name-input">
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control period-location-input">
+            </div>
+          </div>
+          <div class="period-row pr-bottom">
             <p>2:00 PM</p>
             <p>2:50 PM</p>
           </div>  
         </div>
         <div class="period">
-          <div class="period-row">
+          <div class="period-row pr-top pr-text">
             <p>Free</p>
             <p></p>
           </div>
-          <div class="period-row">
+          <div class="period-row pr-top pr-check d-none">
+            <div class="switch">
+              <label>
+                <input class="period-free-checkbox" type="checkbox">
+                Free
+              </label>
+            </div>
+          </div>
+          <div class="period-row pr-middle pr-input d-none">
+            <div class="form-group">
+              <input type="text" class="form-control period-name-input">
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control period-location-input">
+            </div>
+          </div>
+          <div class="period-row pr-bottom">
             <p>3:00 PM</p>
             <p>3:50 PM</p>
           </div>  
         </div>
         <div class="period">
-          <div class="period-row">
+          <div class="period-row pr-top pr-text">
             <p>Free</p>
             <p></p>
           </div>
-          <div class="period-row">
+          <div class="period-row pr-top pr-check d-none">
+            <div class="switch">
+              <label>
+                <input class="period-free-checkbox" type="checkbox">
+                Free
+              </label>
+            </div>
+          </div>
+          <div class="period-row pr-middle pr-input d-none">
+            <div class="form-group">
+              <input type="text" class="form-control period-name-input">
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control period-location-input">
+            </div>
+          </div>
+          <div class="period-row pr-bottom">
             <p>4:00 PM</p>
             <p>4:50 PM</p>
           </div>  

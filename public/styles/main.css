@@ -120,19 +120,39 @@ body {
     background-color: var(--accent-complement);
 }
 
-.period-row:first-of-type {
+.period-row {
     display: flex;
     justify-content: space-between;
+}
+
+.period-row.pr-top {
     margin: 0px 10px 10px 10px;
 }
 
-.period-row:last-of-type {
-    display: flex;
-    justify-content: space-between;
+.period-row.pr-middle {
+    margin: 0px 10px 0px 10px;
+}
+
+.period-row.pr-bottom {
     margin: 10px 10px 0px 10px;
 }
 
 .period-row p {
+    font-size: 1.1rem;
+    margin-bottom: 0;
+}
+
+.period-row .form-group, .period-row .bmd-form-group {
+    display: inline-block;
+    padding-top: 0;
+    margin-bottom: 0;
+}
+
+.period-row input.form-control {
+    font-size: 1.1rem;
+}
+
+.period-row .switch label {
     font-size: 1.1rem;
     margin-bottom: 0;
 }
@@ -150,6 +170,10 @@ hr.border-color {
 .period {
     padding: 10px 0px;
     border-bottom: 1px solid var(--background-secondary);
+}
+
+.period:first-of-type {
+    border-top: 1px solid var(--background-secondary);
 }
 
 .navbar-actions {
@@ -411,6 +435,22 @@ a, a:hover, a:focus {
     background-image: linear-gradient(0deg, #800000 2px,rgba(0,150,136,0) 0),linear-gradient(0deg,rgba(0,0,0,.26) 1px,transparent 0);
 }
 
+.switch label .bmd-switch-track {
+    background-image: linear-gradient(90deg,rgba(0,0,0,.26) 0,rgba(0,0,0,.26) 50%,#cfaeae 0,#cfaeae);
+}
+
+.switch label input:checked+.bmd-switch-track:after {
+    background-color: #800000;
+}
+
+.switch label, .switch label:hover, .is-focused .switch label, .is-focused .switch label:hover {
+    color: #000;
+}
+
+.form-control.period-location-input {
+    text-align: right;
+}
+
 @media (min-width: 768px) {
     .view-selector {
         flex-direction: column;
@@ -498,6 +538,10 @@ a, a:hover, a:focus {
 
     .shared-user-card {
         width: 48%;
+    }
+
+    .period:first-of-type {
+        border-top: none;
     }
 }
 
