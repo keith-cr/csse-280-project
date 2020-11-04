@@ -105,14 +105,14 @@ body {
     color: var(--foreground-primary);
     width: min-content;
     cursor: pointer;
+    text-align: center;
+    min-width: 36px;
 }
 
 .day-selector .day-text.active {
     background-color: var(--accent);
     border-radius: 100px;
     color: var(--accent-complement);
-    min-width: 36px;
-    text-align: center;
 }
 
 .navbar .btn-log-out, .navbar .btn-log-out:hover, .navbar .btn-log-out:active, .navbar .btn-log-out:focus {
