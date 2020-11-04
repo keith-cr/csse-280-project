@@ -382,6 +382,12 @@ hr.border-color {
     color: var(--foreground-primary);
 }
 
+#settingsPage .btn-log-out, #settingsPage .btn-log-out:hover, #settingsPage .btn-log-out:active, #settingsPage .btn-log-out:focus, #settingsPage .btn-log-out:active:focus {
+    background-color: #800000;
+    color: #fff;
+    margin-top: 10px;
+}
+
 .class-entry.current-day, .class-entry.current-period {
     background-color: rgba(128, 0, 0, .24);
 }
