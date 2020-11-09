@@ -729,13 +729,78 @@ rhit.DayViewPageController = class {
 
 rhit.WeekViewPageController = class {
 	constructor() {
-		rhit.scheduleManager = new rhit.ScheduleManager(rhit.authManager.uid);
+    rhit.scheduleManager = new rhit.ScheduleManager(rhit.authManager.uid);
 		rhit.scheduleManager.beginListening(() => {
 			this.updateView();
-		});
+    });
+    
+    this._editing = false;
+    this._editingPeriod = -1;
+    this._editingDay = -1;
     
     document.querySelector("#settings").addEventListener("click", (event) => {
       window.location.href = "/settings.html";
+    });
+
+    document.querySelector('.edit-button').addEventListener('click', (event) => {
+      this._editing = true;
+      this.updateView();
+    });
+
+    document.querySelector('.save-button').addEventListener('click', (event) => {
+      this._editing = false;
+      this._editingDay = -1;
+      this._editingPeriod = -1;
+  
+      rhit.scheduleManager.save((updated) => {
+        if (!updated) {
+          this.updateView();
+        }
+      });
+    });
+
+    document.querySelectorAll('.save-period-button').forEach(element => {
+      element.addEventListener('click', (event) => {
+        const parentNode = event.currentTarget.parentNode;
+        let period = rhit.scheduleManager.getPeriod(this._editingDay, this._editingPeriod);
+        if (parentNode.querySelector('.period-free-checkbox').checked) {
+          period.isFree = true;
+          period.name = '';
+          period.location = '';
+        } else {
+          period.isFree = false;
+          period.name = parentNode.querySelector('.period-name-input').value;
+          period.location = parentNode.querySelector('.period-location-input').value
+        }
+        rhit.scheduleManager.setPeriod(this._editingDay, this._editingPeriod, period);
+        this._editingPeriod = -1;
+        this._editingDay = -1;
+        this.updateView();
+      });
+    });
+
+    document.querySelectorAll('.period-free-checkbox').forEach(element => {
+      element.addEventListener('change', (event) => {
+        const parentNode = event.target.parentNode.parentNode.parentNode.parentNode.parentNode;
+        const editFields = parentNode.querySelector('.edit-fields');
+        if (event.target.checked) {
+          editFields.classList.add('d-none');
+        } else {
+          editFields.classList.remove('d-none');
+        }
+      });
+    });
+
+    document.querySelectorAll('.class-entry').forEach(element => {
+      element.addEventListener('click', (event) => {
+        if (!this._editing) {
+          return;
+        } else {
+          this._editingPeriod = parseInt(event.target.dataset['period']);
+          this._editingDay = parseInt(event.target.dataset['day']);
+          this.updateView();
+        }
+      });
     });
 	}
 
@@ -743,14 +808,14 @@ rhit.WeekViewPageController = class {
 		const currPeriod = rhit.scheduleManager.getCurrentPeriodIndex();
     const currDay = rhit.scheduleManager.getCurrentDayIndex();
     const isWeekend = rhit.scheduleManager.isWeekend();
-		const hourElems = document.querySelectorAll('.week-day');
+    const hourElems = document.querySelectorAll('.week-day');
 
 		for (let dayIndex = 0; dayIndex < rhit.scheduleManager.getDaysLength(); dayIndex++) {
 			for (let periodIndex = 0; periodIndex < rhit.scheduleManager.getPeriodsLength(); periodIndex++) {
 				const period = rhit.scheduleManager.getPeriod(dayIndex, periodIndex);
 				const dayElems = hourElems[periodIndex].querySelectorAll('.class-entry');
 
-				if (periodIndex === currPeriod) {
+				if (periodIndex === currPeriod && !isWeekend) {
 					dayElems[dayIndex].classList.add('current-period');
 				} else {
 					dayElems[dayIndex].classList.remove('current-period');
@@ -770,7 +835,48 @@ rhit.WeekViewPageController = class {
           ? `${rhit.scheduleManager.getPeriodDisplayName(period)} in ${rhit.scheduleManager.getPeriodDisplayLocation(period)}` 
           : rhit.scheduleManager.getPeriodDisplayName(period);
 			}
-		}
+    }
+    
+    if (this._editing) {
+      document.querySelector('.edit-instructions').classList.remove('d-none');
+      document.querySelector('.edit-button').classList.add('d-none');
+      document.querySelector('.save-button').classList.remove('d-none');
+      document.querySelector('#week').classList.add('editing');
+
+      if (this._editingDay != -1 && this._editingPeriod != -1) {
+        const period = rhit.scheduleManager.getPeriod(this._editingDay, this._editingPeriod);
+        for (let i = 0; i < rhit.scheduleManager.getPeriodsLength(); i++) {
+          const editElem = document.querySelector(`.week-edit.period-${i}`);
+          if (i === this._editingPeriod) {
+            editElem.classList.remove('d-none');
+            editElem.querySelector('.arrow-pointer').className = `arrow-pointer day-${this._editingDay}`;
+            editElem.querySelector('.period-free-checkbox').checked = period.isFree;
+            if (period.isFree) {
+              editElem.querySelector('.edit-fields').classList.add('d-none');
+            } else {
+              editElem.querySelector('.edit-fields').classList.remove('d-none');
+            }
+            editElem.querySelector('.period-name-input').value = period.name;
+            editElem.querySelector('.period-location-input').value = period.location;
+          } else {
+            editElem.classList.add('d-none');
+          }
+        }
+      } else {
+        for (let i = 0; i < rhit.scheduleManager.getPeriodsLength(); i++) {
+          document.querySelector(`.week-edit.period-${i}`).classList.add('d-none');
+        }
+      }
+    } else {
+      document.querySelector('.edit-instructions').classList.add('d-none');
+      document.querySelector('.edit-button').classList.remove('d-none');
+      document.querySelector('.save-button').classList.add('d-none');
+      document.querySelector('#week').classList.remove('editing');
+
+      for (let i = 0; i < rhit.scheduleManager.getPeriodsLength(); i++) {
+        document.querySelector(`.week-edit.period-${i}`).classList.add('d-none');
+      }
+    }
 	}
 }
 

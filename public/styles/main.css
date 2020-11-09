@@ -14,6 +14,7 @@ body {
 .navbar {
     background-color: var(--accent);
     color: white;
+    min-height: 56px;
 }
 
 .page-container {
@@ -453,8 +454,89 @@ a, a:hover, a:focus {
     color: #000;
 }
 
-.form-control.period-location-input {
+.day-page .form-control.period-location-input {
     text-align: right;
+}
+
+.week-edit {
+    background-color: #800000;
+    position: relative;
+}
+
+.week-edit-container {
+    padding: 10px 20px;
+}
+
+.week-edit .save-period-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #fff;
+    font-size: 1.4rem;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.week-edit .switch label, .week-edit .switch label:hover, .week-edit .is-focused .switch label, .week-edit .is-focused .switch label:hover {
+    color: #fff;
+}
+
+.week-edit .form-control {
+    color: #fff;
+}
+
+.week-edit .form-control::placeholder {
+    color: rgba(255,255,255,.8);
+}
+
+.week-edit .is-focused .form-control, .week-edit .form-control {
+    background-image: linear-gradient(0deg, #fff 2px,rgba(0,150,136,0) 0), linear-gradient(0deg,rgba(255,255,255,.8) 1px,transparent 0);
+}
+
+.week-edit [class^=bmd-label] {
+    color: rgba(255,255,255,.8);
+}
+
+/* https://css-tricks.com/snippets/css/css-triangle/ */
+.week-edit .arrow-pointer {
+    position: relative;
+    width: 0; 
+    height: 0; 
+    top: -9px;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 10px solid #800000;
+}
+
+.week-edit .arrow-pointer.day-0 {
+    left: calc((100% / 6) + ((100% / 6) / 2) - 20px);
+}
+
+.week-edit .arrow-pointer.day-1 {
+    left: calc(((100% / 6) * 2) + ((100% / 6) / 2) - 20px);
+}
+
+.week-edit .arrow-pointer.day-2 {
+    left: calc(((100% / 6) * 3) + ((100% / 6) / 2) - 20px);
+}
+
+.week-edit .arrow-pointer.day-3 {
+    left: calc(((100% / 6) * 4) + ((100% / 6) / 2) - 20px);
+}
+
+.week-edit .arrow-pointer.day-4 {
+    left: calc(((100% / 6) * 5) + ((100% / 6) / 2) - 20px);
+}
+
+.edit-instructions {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 400;
+}
+
+#week.editing .class-entry {
+    color: gray;
+    cursor: pointer;
 }
 
 @media (min-width: 768px) {
@@ -548,6 +630,10 @@ a, a:hover, a:focus {
 
     .period:first-of-type {
         border-top: none;
+    }
+
+    .edit-instructions {
+        font-size: 2rem;
     }
 }
 
