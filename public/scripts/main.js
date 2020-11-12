@@ -873,7 +873,7 @@ rhit.SettingsPageController = class {
       if (event.keyCode === 13) { // Enter key
         nameField.blur();
       } else if (event.keyCode === 27) { // Escape key
-        nameField.value = rhit.settingsManager.name;
+        nameField.value = rhit.desanitizeString(rhit.settingsManager.name);
         nameField.blur();
       }
     });
@@ -881,10 +881,46 @@ rhit.SettingsPageController = class {
     nameField.addEventListener("focusout", (event) => {
       rhit.settingsManager.setName(nameField.value);
     });
+
+    let searchField = document.querySelector("#search");
+    searchField.addEventListener("input", (event) => {
+      for (let user of rhit.settingsManager.users.values()) {
+        if (user.shared === false) {
+          let regex = new RegExp("^" + searchField.value, "i");
+          if (regex.test(user.name) || regex.test(user.email)) {
+            user.element.style.display = "flex";
+          } else {
+            user.element.style.display = "none";
+          }
+        }
+      }
+    });
+
+    searchField.addEventListener("focusin", (event) => {
+      document.querySelector("#cancelSearch").style.display = "block";
+      document.querySelector("#shared-users").style.display = "none";
+      document.querySelector("#share-with-users").style.display = "flex";
+    });
+
+    searchField.addEventListener("keydown", (event) => {
+      if (event.keyCode === 27) {
+        document.querySelector("#cancelSearch").style.display = "none";
+        document.querySelector("#shared-users").style.display = "flex";
+        document.querySelector("#share-with-users").style.display = "none";
+        searchField.value = "";
+        searchField.blur();
+      }
+    });
+
+    document.querySelector("#cancelSearch").addEventListener("click", (event) => {
+      document.querySelector("#cancelSearch").style.display = "none";
+      document.querySelector("#shared-users").style.display = "flex";
+      document.querySelector("#share-with-users").style.display = "none";
+    });
   }
 
   updateView() {
-    document.querySelector("#name").value = rhit.settingsManager.name;
+    document.querySelector("#name").value = rhit.desanitizeString(rhit.settingsManager.name);
   }
 }
 
@@ -892,11 +928,14 @@ rhit.SettingsManager = class {
   constructor(uid) {
     this._uid    = uid;
     this._name   = "Jane Doe";
-    this._shared = [];
+    this._shared = new Map();
+    this._users  = new Map();
+    this._sharedUserDiv = document.querySelector("#shared-users");
+    this._shareWithDiv  = document.querySelector("#share-with-users");
   }
 
   beginListening(changeListener) {
-		this._unsubscribe = firebase.firestore().collection(rhit.FB_COLLECTION_USER).doc(this._uid)
+		this._unsubscribeSelf = firebase.firestore().collection(rhit.FB_COLLECTION_USER).doc(this._uid)
 			.onSnapshot((doc) => {
 				if (!doc.exists) {
           this.setName(this._uid);
@@ -906,17 +945,127 @@ rhit.SettingsManager = class {
 			  changeListener();
 			}, (error) => {
 				console.error(error);
-			});
+      });
+      
+    this._unsubscribeSchedule = firebase.firestore().collection(rhit.FB_COLLECTION_SCHEDULE).doc(this._uid)
+      .onSnapshot((doc) => {
+        this._sharedUserDiv.innerHTML = "";
+        this._shared = new Map();
+        if (doc.data().sharedWith) {
+          for (let user of doc.data().sharedWith) {
+            firebase.firestore().collection(rhit.FB_COLLECTION_USER).doc(user).get().then((doc) => {
+              this._shared.set(user, { name: doc.data().displayName, email: `${user}@rose-hulman.edu`, element: this._createSharedElement(user, doc.data().displayName) });
+              if (this._users.has(user)) {
+                this._users.get(user).element.style.display = "none";
+                this._users.get(user).shared = true;
+              }
+            });
+          }
+        }
+      });
+    
+    this._unsubscribeUsers = firebase.firestore().collection(rhit.FB_COLLECTION_USER)
+      .onSnapshot((docs) => {
+        this._shareWithDiv.innerHTML = "";
+        this._users = new Map();
+        if (docs.docs) {
+          for (let doc of docs.docs) {
+            if (this._uid !== doc.id) {
+              this._users.set(doc.id, { name: doc.data().displayName, email: `${doc.id}@rose-hulman.edu`, shared: false, element: this._createShareWithElement(doc.id, doc.data().displayName) });
+              if (this._shared.has(doc.id)) {
+                this._users.get(doc.id).element.style.display = "none";
+                this._users.get(doc.id).shared = true;
+              }
+            }
+          }
+        }
+      });
+  }
+
+  stopListening() {
+    this._unsubscribeSelf();
+    this._unsubscribeSchedule();
+    this._unsubscribeUsers();
   }
 
   setName(name) {
+    name = rhit.sanitizeString(name);
     this._name = name;
-    firebase.firestore().collection(rhit.FB_COLLECTION_USER).doc(this._uid).set({ displayName: this._name }).catch((error) => { console.error(error); });
+    firebase.firestore().collection(rhit.FB_COLLECTION_USER).doc(this._uid).update({ displayName: this._name }).catch((error) => { console.error(error); });
+  }
+
+  removeUser(uid) {
+    this._shared.get(uid).element.remove();
+    this._shared.delete(uid);
+    this._users.get(uid).element.style.display = "flex";
+    this._users.get(uid).shared = false;
+    firebase.firestore().collection(rhit.FB_COLLECTION_SCHEDULE).doc(this._uid).update({ sharedWith: Array.from(this._shared.keys()) }).catch((error) => { console.error(error); });
+  }
+
+  addUser(uid) {
+    this._shared.set(uid, null);
+    firebase.firestore().collection(rhit.FB_COLLECTION_SCHEDULE).doc(this._uid).update({ sharedWith: Array.from(this._shared.keys()) }).catch((error) => { console.error(error); });
   }
 
   get name() {
     return this._name;
   }
+
+  get users() {
+    return this._users;
+  }
+
+  get sharedUsers() {
+    return this._shared;
+  }
+
+  _createSharedElement(uid, displayName) {
+    let template = document.createElement("template");
+    template.innerHTML =
+    `<div class="shared-user-card">
+      <div class="shared-text">
+        <p class="shared-username">${displayName}</p>
+        <p class="shared-email">${uid}@rose-hulman.edu</p>
+      </div>
+      <div class="remove-shared oi oi-circle-x"></div>
+    </div>`.trim();
+    let child = template.content.firstChild;
+    child.addEventListener("click", (event) => {
+      rhit.settingsManager.removeUser(uid);
+    });
+    this._sharedUserDiv.appendChild(child);
+    return child;
+  }
+
+  _createShareWithElement(uid, displayName) {
+    let template = document.createElement("template");
+    template.innerHTML =
+    `<div class="share-with-user-card">
+      <div class="share-with-text">
+        <p class="share-with-username">${displayName}</p>
+        <p class="share-with-email">${uid}@rose-hulman.edu</p>
+      </div>
+      <div class="add-shared oi oi-plus"></div>
+    </div>`.trim();
+    let child = template.content.firstChild;
+    child.addEventListener("click", (event) => {
+      rhit.settingsManager.addUser(uid);
+    });
+    this._shareWithDiv.appendChild(child);
+    return child;
+  }
+}
+
+rhit.sanitizeString = (text) => {
+  let p = document.createElement("p");
+  p.innerText = text;
+  return p.innerHTML;
+}
+
+rhit.desanitizeString = (text) => {
+  let p = document.createElement("p");
+  p.innerHTML = text;
+  return p.innerText;
 }
 
 rhit.checkForRedirects = () => {

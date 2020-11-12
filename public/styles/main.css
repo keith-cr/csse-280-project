@@ -279,7 +279,12 @@ hr.border-color {
     margin-right: 0.25em;
 }
 
-.shared-users {
+#cancelSearch {
+    margin-left: 0.25em;
+    display: none;
+}
+
+#shared-users {
     display: flex;
     justify-content: flex-start;
     flex-wrap: wrap;
@@ -318,6 +323,48 @@ hr.border-color {
 
 .remove-shared {
     color: var(--foreground-secondary);
+}
+
+#share-with-users {
+    display: none;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.share-with-user-card {
+    margin-top: 1em;
+    margin-left: 1%;
+    margin-right: 1%;
+
+    width: 100%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background-color: var(--accent);
+    border: 2px solid var(--accent);
+    border-radius: 1em;
+
+    padding: 1em;
+}
+
+.share-with-username {
+    margin: 0;
+    font-size: 1em;
+
+    color: var(--accent-complement);
+}
+
+.share-with-email {
+    margin: 0;
+    font-size: 0.85em;
+
+    color: var(--accent-complement);
+}
+
+.add-shared{
+    color: var(--accent-complement);
 }
 
 #loginButton,
@@ -494,6 +541,10 @@ a, a:hover, a:focus {
     .shared-user-card {
         width: 48%;
     }
+
+    .share-with-user-card {
+        width: 48%;
+    }
 }
 
 @media (min-width: 1200px) {
@@ -501,4 +552,7 @@ a, a:hover, a:focus {
         width: 32%;
     }
 
+    .share-with-user-card {
+        width: 32%;
+    }
 }
