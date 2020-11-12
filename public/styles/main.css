@@ -110,8 +110,9 @@ body {
 .day-selector .day-text.active {
     background-color: var(--accent);
     border-radius: 100px;
-    padding: 0px 8px;
     color: var(--accent-complement);
+    min-width: 36px;
+    text-align: center;
 }
 
 .navbar .btn-log-out, .navbar .btn-log-out:hover, .navbar .btn-log-out:active, .navbar .btn-log-out:focus {
@@ -151,7 +152,7 @@ hr.border-color {
     border-bottom: 1px solid var(--background-secondary);
 }
 
-.navbar-right {
+.navbar-actions {
     display: flex;
     align-items: center;
 }
@@ -205,7 +206,7 @@ hr.border-color {
 }
 
 .class-entry {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
 }
 
 #loginPage {
@@ -453,6 +454,10 @@ a, a:hover, a:focus {
     display: none;
 }
 
+.custom-file-control, .form-control, .is-focused .custom-file-control, .is-focused .form-control {
+    background-image: linear-gradient(0deg, #800000 2px,rgba(0,150,136,0) 0),linear-gradient(0deg,rgba(0,0,0,.26) 1px,transparent 0);
+}
+
 @media (min-width: 768px) {
     .view-selector {
         flex-direction: column;
@@ -475,12 +480,12 @@ a, a:hover, a:focus {
         border-left: 1px solid var(--background-secondary);
     }
 
-    .now-page .card {
-        margin-bottom: 30px;
+    .now-page {
+        padding: 0px 15px 0px 0px;
     }
 
-    .day-page {
-        padding-left: 15px;
+    .now-page .card {
+        margin-bottom: 30px;
     }
 
     .day-page.page-container {
@@ -491,8 +496,8 @@ a, a:hover, a:focus {
         margin-top: 19px;
     }
 
-    .navbar-right .oi:last-of-type {
-        margin-right: 10px;
+    .navbar-right .btn {
+        margin-left: 10px;
     }
 
     .class-entry {
