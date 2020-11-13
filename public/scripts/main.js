@@ -539,8 +539,8 @@ rhit.ImportPageController = class {
 }
 
 rhit.NowViewPageController = class {
-	constructor() {
-		rhit.scheduleManager = new rhit.ScheduleManager(rhit.authManager.uid);
+	constructor(uid) {
+		rhit.scheduleManager = new rhit.ScheduleManager(uid);
 		rhit.scheduleManager.beginListening(() => {
 			this.updateView();
     });
@@ -591,8 +591,8 @@ rhit.NowViewPageController = class {
 }
 
 rhit.DayViewPageController = class {
-	constructor() {
-		rhit.scheduleManager = new rhit.ScheduleManager(rhit.authManager.uid);
+	constructor(uid) {
+		rhit.scheduleManager = new rhit.ScheduleManager(uid);
 		rhit.scheduleManager.beginListening(() => {
 			this.updateView();
 		});
@@ -730,8 +730,8 @@ rhit.DayViewPageController = class {
 }
 
 rhit.WeekViewPageController = class {
-	constructor() {
-    rhit.scheduleManager = new rhit.ScheduleManager(rhit.authManager.uid);
+	constructor(uid) {
+		rhit.scheduleManager = new rhit.ScheduleManager(uid);
 		rhit.scheduleManager.beginListening(() => {
 			this.updateView();
     });
@@ -1173,25 +1173,54 @@ rhit.ScheduleManager = class {
 }
 
 rhit.MenuController = class {
-  constructor() {
+  constructor(uid) {
     rhit.menuManager = new rhit.MenuManager(rhit.authManager.uid);
     rhit.menuManager.beginListening(this.updateView.bind(this));
 
     let menu = document.querySelector("#menu");
-    document.querySelector("#menuButton").addEventListener("click", (event) => {
+    let menuMobile = document.querySelector("#menuMobile");
+    let shade = document.querySelector("#shade");
+      document.querySelector("#menuButton").addEventListener("click", (event) => {
       if (!rhit.menuToggle) {
         menu.style.width = "400px";
+        menuMobile.style.opacity = "1";
+        shade.classList.add("active");
       } else {
         menu.style.width = "0";
+        menuMobile.style.opacity = "0";
+        shade.classList.remove("active");
       }
       rhit.menuToggle = !rhit.menuToggle;
     });
+    shade.addEventListener("click", (event) => {
+      document.querySelector("#menuButton").click();
+    });
+    document.querySelector("#menuMobileCancelButton").addEventListener("click", (event) => {
+      document.querySelector("#menuButton").click();
+    });
 
     document.querySelector("#myScheduleEntry").addEventListener("click", (event) => {
-      document.querySelector("#menuButton").click();
-      rhit.scheduleManager.setSchedule(rhit.authManager.uid);
-      document.querySelector(".navbar-myschedule").style.display = "block";
+      window.location.href = window.location.href.split("\?")[0] + `?uid=${rhit.authManager.uid}`;
     });
+    document.querySelector("#myScheduleMobile").addEventListener("click", (event) => {
+      window.location.href = window.location.href.split("\?")[0] + `?uid=${rhit.authManager.uid}`;
+    });
+
+    let search = document.querySelector("#searchMenu");
+    search.addEventListener("input", (event) => {
+      rhit.menuManager.filter(RegExp(search.value, "i"));
+    });
+    search.addEventListener("keydown", (event) => {
+      if (event.keyCode === 27) {
+        search.value = "";
+        search.blur();
+        rhit.menuManager.filter(RegExp(""));
+      }
+    });
+
+    document.querySelector("#nowLink" ).setAttribute("href", `now.html?uid=${uid}` );
+    document.querySelector("#dayLink" ).setAttribute("href", `day.html?uid=${uid}` );
+    document.querySelector("#weekLink").setAttribute("href", `week.html?uid=${uid}`);
   }
 
   updateView() {
@@ -1202,20 +1231,21 @@ rhit.MenuController = class {
 rhit.MenuManager = class {
   constructor(uid) {
     this._uid       = uid;
-    this._shared    = new Set();
+    this._shared    = new Map();
     this._sharedDiv = document.querySelector("#sharedList");
+    this._sharedMobileDiv = document.querySelector("#menuMobileDynamicList");
   }
 
   beginListening(changeListener) {
     this._unsubscribe = firebase.firestore().collection(rhit.FB_COLLECTION_SCHEDULE)
     .onSnapshot((docs) => {
-      this._shared = new Set();
+      this._shared = new Map();
       this._sharedDiv.innerHTML = "";
+      this._sharedMobileDiv.innerHTML = "";
       for (let doc of docs.docs) {
         if (doc.data().sharedWith && doc.data().sharedWith.includes(this._uid)) {
-          this._shared.add(doc.id);
           firebase.firestore().collection(rhit.FB_COLLECTION_USER).doc(doc.id).get().then((foreignDoc) => {
-            this._createSharedElement(foreignDoc.id, foreignDoc.data().displayName);
+            this._shared.set(doc.id, this._createSharedElement(foreignDoc.id, foreignDoc.data().displayName));
           });
         }
       }
@@ -1227,19 +1257,37 @@ rhit.MenuManager = class {
     this._unsubscribe();
   }
 
+  filter(regex) {
+    for (let [key, value] of this._shared) {
+      if (!regex.test(key)) {
+        value.style.display = "none";
+      } else {
+        value.style.display = "block";
+      }
+    }
+  }
+
   _createSharedElement(uid, displayName) { 
     let template = document.createElement("template");
+    template.innerHTML = `<p class="menuMobileEntry">${rhit.sanitizeString(displayName)}</p>`.trim();
+    console.log(template);
+    let child = template.content.firstChild;
+    child.addEventListener("click", (event) => {
+      window.location.href = window.location.href.split("\?")[0] + `?uid=${uid}`;
+    });
+    this._sharedMobileDiv.appendChild(child);
+
+    template = document.createElement("template");
     template.innerHTML =
     `<div class="menuEntry">
       <p class="menuEntryText">${rhit.sanitizeString(displayName)}</p>
     </div>`.trim();
-    let child = template.content.firstChild;
+    child = template.content.firstChild;
     child.addEventListener("click", (event) => {
-      document.querySelector("#menuButton").click();
-      rhit.scheduleManager.setSchedule(uid);
-      document.querySelector(".navbar-myschedule").style.display = "none";
+      window.location.href = window.location.href.split("\?")[0] + `?uid=${uid}`;
     });
     this._sharedDiv.appendChild(child);
+
     return child;
   }
 }
@@ -1472,6 +1520,9 @@ rhit.checkForRedirects = () => {
 }
 
 rhit.initializePage = function() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const uid = urlParams.get("uid") ? urlParams.get("uid") : rhit.authManager.uid;
+
   if (document.querySelector('.btn-log-out')) {
     document.querySelector('.btn-log-out').addEventListener('click', () => {
       rhit.authManager.signOut();
@@ -1479,27 +1530,27 @@ rhit.initializePage = function() {
   }
 
   if (document.querySelector('.navbar-name')) {
-    // TODO: Update with name of selected person's schedule, not just current user
-    const displayName = rhit.authManager.displayName;
-    if (displayName) {
-      document.querySelector('.navbar-name').innerText = displayName[displayName.length - 1].toLowerCase() === 's' 
-        ? `${displayName}' Schedule` 
-        : `${displayName}'s Schedule`;
-    }
+    firebase.firestore().collection(rhit.FB_COLLECTION_USER).doc(uid).get().then((doc) => {
+      const displayName = doc.data().displayName;
+      if (displayName) {
+        document.querySelector('.navbar-name').innerText = displayName[displayName.length - 1].toLowerCase() === 's' 
+          ? `${displayName}' Schedule` 
+          : `${displayName}'s Schedule`;
+      }
+    });
   }
 
-	const urlParams = new URLSearchParams(window.location.search);
 	if (document.querySelector('#importPage')) {
 		new rhit.ImportPageController();
 	} else if (document.querySelector('#dayViewPage')) {
-		new rhit.DayViewPageController();
-    new rhit.MenuController();
+		new rhit.DayViewPageController(uid);
+    new rhit.MenuController(uid);
 	} else if (document.querySelector('#weekViewPage')) {
-		new rhit.WeekViewPageController();
-    new rhit.MenuController();
+		new rhit.WeekViewPageController(uid);
+    new rhit.MenuController(uid);
 	} else if (document.querySelector('#nowViewPage')) {
-		new rhit.NowViewPageController();
-    new rhit.MenuController();
+		new rhit.NowViewPageController(uid);
+    new rhit.MenuController(uid);
 	} else if (document.querySelector("#loginPage")) {
 		new rhit.LoginPageController();
   } else if (document.querySelector("#settingsPage")) {

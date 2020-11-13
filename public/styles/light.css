@@ -1,0 +1,9 @@
+:root {
+	--accent: #800000;
+	--accent-secondary: #E1C2C2;
+    --accent-complement: white;
+    --background-primary: white;
+    --background-secondary: #E6E6E6;
+    --foreground-primary: black;
+    --foreground-secondary: #666666;
+}

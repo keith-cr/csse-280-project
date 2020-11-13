@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
   <link rel="stylesheet" href="styles/bootstrap-material-design.min.css">
   <link rel="stylesheet" href="styles/open-iconic-bootstrap.css">
+  <link rel="stylesheet" href="styles/light.css">
   <link rel="stylesheet" href="styles/main.css">
   <title>Day View | Rose Schedule</title>
 </head>
@@ -43,14 +44,28 @@
       <div id="sharedList">
       </div>
     </div>
+    <div id="shade"></div>
+    <div id="menuMobile">
+      <div id="menuMobileBody">
+        <p id="menuMobileHeader">Select Schedule</p>
+        <div id="menuMobileList">
+          <p id="myScheduleMobile" class="menuMobileEntry">My Schedule</p>
+          <div id="menuMobileDynamicList">
+          </div>
+        </div>
+        <div id="menuMobileFooter">
+          <button id="menuMobileCancelButton" class="btn btn-cancel">CANCEL</button>
+        </div>
+      </div>
+    </div>
     <div id="dayViewPage" class="day-page container page-container">
       <div class="row no-gutters">
         <div class="col-md-1">
           <div class="view-selector">
             <div class="view-text view-label">View:</div>
-            <a href="/now.html" class="view-text">Now</a>
-            <a href="/day.html" class="view-text active">Day</a>
-            <a href="/week.html" class="view-text">Week</a>
+            <a id="nowLink"  href="/now.html" class="view-text">Now</a>
+            <a id="dayLink"  href="/day.html" class="view-text active">Day</a>
+            <a id="weekLink" href="/week.html" class="view-text">Week</a>
           </div>
         </div>
         <div class="col-md-auto">
@@ -303,6 +318,7 @@
       </div>
     </div>
   </div>
+
   <script src="scripts/jquery.min.js"></script>
   <script src="scripts/popper.js"></script>
   <script src="scripts/bootstrap-material-design.js"></script>
