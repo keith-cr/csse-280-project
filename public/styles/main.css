@@ -726,16 +726,19 @@ a, a:hover, a:focus {
 .remove-shared {
     cursor: pointer;
 }
-
-#dayViewPage.page-container {
-    margin-top: 0px;
-}
-
 .menuEntry {
     cursor: pointer;
 }
 
+.current-period .switch label {
+    color: #fff;
+}
+
 @media (min-width: 768px) {
+    #dayViewPage.page-container {
+        margin-top: 0px;
+    }    
+
     #page {
         display: flex;
     }
