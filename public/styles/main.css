@@ -730,6 +730,10 @@ a, a:hover, a:focus {
     cursor: pointer;
 }
 
+.current-period .switch label {
+    color: #fff;
+}
+
 @media (min-width: 768px) {
     #dayViewPage.page-container {
         margin-top: 0px;
