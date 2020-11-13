@@ -13,45 +13,66 @@
 
 <body>
   <nav class="navbar navbar-dark fixed-top justify-content-between">
-    <a class="navbar-brand navbar-name" href="/now.html">Rose Schedule</a>
+    <div class="navbar-left">
+      <i id="menuButton" class="material-icons">menu</i>
+      <a class="navbar-brand navbar-name" href="/now.html">Rose Schedule</a>
+    </div>
     <div class="navbar-right">
       <div class="navbar-actions">
-        <span class="oi oi-pencil"></span>
-        <span id="settings" class="oi oi-cog"></span>
+        <div class="navbar-myschedule">
+          <span class="oi oi-pencil"></span>
+          <span id="settings" class="oi oi-cog"></span>
+        </div>
         <button class="btn btn-log-out my-2 my-sm-0 d-none d-md-inline-block">Log Out</button>  
       </div>
     </div>
   </nav>
-  <div id="nowViewPage" class="now-page container page-container">
-    <div class="row no-gutters">
-      <div class="col-md-1">
-        <div class="view-selector">
-          <div class="view-text view-label">View:</div>
-          <a href="/now.html" class="view-text active">Now</a>
-          <a href="/day.html" class="view-text">Day</a>
-          <a href="/week.html" class="view-text">Week</a>
+  <div id="page">
+    <div id="menu">
+      <div id="menuHeader">
+        <p id="menuTitle">Select Schedule</p>
+        <div class="bmd-form-group bmd-collapse-inline pull-xs-right">
+          <i class="material-icons search-icon">search</i>
+          <input class="form-control" type="text" id="searchMenu" placeholder="Search for a user">
         </div>
       </div>
-      <div class="col">
-        <div class="card current-period-card d-none">
-          <div class="card-body background-color border-color">
-            <div class="class-name"></div>
-            <div class="class-time"></div>
-            <div class="class-location"></div>
+      <div id="myScheduleEntry" class="menuEntry">
+        <p class="menuEntryText">My Schedule</p>
+      </div>
+      <div id="sharedList">
+      </div>
+    </div>
+    <div id="nowViewPage" class="now-page container page-container">
+      <div class="row no-gutters">
+        <div class="col-md-1">
+          <div class="view-selector">
+            <div class="view-text view-label">View:</div>
+            <a href="/now.html" class="view-text active">Now</a>
+            <a href="/day.html" class="view-text">Day</a>
+            <a href="/week.html" class="view-text">Week</a>
           </div>
         </div>
-        <div class="card free-period-card d-none">
-          <div class="card-body background-color border-color">
-            <div class="class-name"></div>
-            <div class="class-time"></div>
-            <div class="class-location"></div>
+        <div class="col">
+          <div class="card current-period-card d-none">
+            <div class="card-body background-color border-color">
+              <div class="class-name"></div>
+              <div class="class-time"></div>
+              <div class="class-location"></div>
+            </div>
           </div>
-        </div>
-        <div class="card next-period-card d-none">
-          <div class="card-body background-color border-color">
-            <div class="class-name"></div>
-            <div class="class-time"></div>
-            <div class="class-location"></div>
+          <div class="card free-period-card d-none">
+            <div class="card-body background-color border-color">
+              <div class="class-name"></div>
+              <div class="class-time"></div>
+              <div class="class-location"></div>
+            </div>
+          </div>
+          <div class="card next-period-card d-none">
+            <div class="card-body background-color border-color">
+              <div class="class-name"></div>
+              <div class="class-time"></div>
+              <div class="class-location"></div>
+            </div>
           </div>
         </div>
       </div>

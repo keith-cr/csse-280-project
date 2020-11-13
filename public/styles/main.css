@@ -7,13 +7,22 @@
     --foreground-secondary: #666666;
 }
 
+html, body {
+    height: 100%;
+}
+
 body {
     background: var(--background-primary);
 }
 
 .navbar {
+    position: static;
     background-color: var(--accent);
     color: white;
+}
+
+#page {
+    height: 100%;
 }
 
 .page-container {
@@ -113,6 +122,15 @@ body {
     color: var(--accent-complement);
     min-width: 36px;
     text-align: center;
+}
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+}
+
+#menuButton {
+    margin-right: 0.5em;
 }
 
 .navbar .btn-log-out, .navbar .btn-log-out:hover, .navbar .btn-log-out:active, .navbar .btn-log-out:focus {
@@ -459,6 +477,56 @@ a, a:hover, a:focus {
 }
 
 @media (min-width: 768px) {
+    #page {
+        display: flex;
+    }
+
+    #menu {
+        width: 0;
+        height: 100%;
+        transition-property: width;
+        transition-duration: 0.5s;
+        overflow: hidden;
+
+        box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12)
+    }
+
+    #menuHeader {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        
+        background-color: var(--accent);
+        color: var(--accent-complement);
+
+        font-size: 2em;
+    }
+
+    #menuTitle {
+        margin-top: 0.5em;
+        margin-bottom: 0;
+    }
+
+    #searchMenu {
+        color: var(--accent-complement);
+    }
+
+    #searchMenu::placeholder {
+        color: var(--accent-complement);
+        opacity: 0.5;
+    }
+
+    .menuEntry {
+        padding-left: 1em;
+        padding-top: 0.5em;
+        padding-bottom: 0.5em;
+        border-bottom: 1px solid var(--background-secondary);
+    }
+
+    .menuEntryText {
+        margin: 0;
+    }
+
     .view-selector {
         flex-direction: column;
         height: 100%;
