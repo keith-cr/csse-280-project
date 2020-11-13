@@ -1164,7 +1164,7 @@ rhit.ScheduleManager = class {
     }
     return period.location;
   }
-  
+
   setSchedule(uid) {
     this.stopListening();
     this._uid = uid;
@@ -1274,7 +1274,6 @@ rhit.MenuManager = class {
   _createSharedElement(uid, displayName) { 
     let template = document.createElement("template");
     template.innerHTML = `<p class="menuMobileEntry">${rhit.sanitizeString(displayName)}</p>`.trim();
-    console.log(template);
     let child = template.content.firstChild;
     child.addEventListener("click", (event) => {
       window.location.href = window.location.href.split("\?")[0] + `?uid=${uid}`;
