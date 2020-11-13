@@ -578,7 +578,7 @@ rhit.DayViewPageController = class {
 		const currPeriod = rhit.scheduleManager.getCurrentPeriodIndex();
 
 		for (let i = 0; i < rhit.scheduleManager.getPeriodsLength(); i++) {
-			let period = rhit.scheduleManager.getPeriod(this._selectedDay, i);
+      let period = rhit.scheduleManager.getPeriod(this._selectedDay, i);
 			if (currDay === this._selectedDay && i === currPeriod) {
 				periodElems[i].classList.add('current-period');
 			} else {
@@ -884,16 +884,31 @@ rhit.MenuController = class {
     rhit.menuManager.beginListening(this.updateView.bind(this));
 
     let menu = document.querySelector("#menu");
-    document.querySelector("#menuButton").addEventListener("click", (event) => {
+    let menuMobile = document.querySelector("#menuMobile");
+    let shade = document.querySelector("#shade");
+      document.querySelector("#menuButton").addEventListener("click", (event) => {
       if (!rhit.menuToggle) {
         menu.style.width = "400px";
+        menuMobile.style.opacity = "1";
+        shade.classList.add("active");
       } else {
         menu.style.width = "0";
+        menuMobile.style.opacity = "0";
+        shade.classList.remove("active");
       }
       rhit.menuToggle = !rhit.menuToggle;
     });
+    shade.addEventListener("click", (event) => {
+      document.querySelector("#menuButton").click();
+    });
+    document.querySelector("#menuMobileCancelButton").addEventListener("click", (event) => {
+      document.querySelector("#menuButton").click();
+    });
 
     document.querySelector("#myScheduleEntry").addEventListener("click", (event) => {
+      window.location.href = window.location.href.split("\?")[0] + `?uid=${rhit.authManager.uid}`;
+    });
+    document.querySelector("#myScheduleMobile").addEventListener("click", (event) => {
       window.location.href = window.location.href.split("\?")[0] + `?uid=${rhit.authManager.uid}`;
     });
 
@@ -924,6 +939,7 @@ rhit.MenuManager = class {
     this._uid       = uid;
     this._shared    = new Map();
     this._sharedDiv = document.querySelector("#sharedList");
+    this._sharedMobileDiv = document.querySelector("#menuMobileDynamicList");
   }
 
   beginListening(changeListener) {
@@ -931,6 +947,7 @@ rhit.MenuManager = class {
     .onSnapshot((docs) => {
       this._shared = new Map();
       this._sharedDiv.innerHTML = "";
+      this._sharedMobileDiv.innerHTML = "";
       for (let doc of docs.docs) {
         if (doc.data().sharedWith && doc.data().sharedWith.includes(this._uid)) {
           firebase.firestore().collection(rhit.FB_COLLECTION_USER).doc(doc.id).get().then((foreignDoc) => {
@@ -958,15 +975,25 @@ rhit.MenuManager = class {
 
   _createSharedElement(uid, displayName) { 
     let template = document.createElement("template");
-    template.innerHTML =
-    `<div class="menuEntry">
-      <p class="menuEntryText">${rhit.sanitizeString(displayName)}</p>
-    </div>`.trim();
+    template.innerHTML = `<p class="menuMobileEntry">${rhit.sanitizeString(displayName)}</p>`.trim();
+    console.log(template);
     let child = template.content.firstChild;
     child.addEventListener("click", (event) => {
       window.location.href = window.location.href.split("\?")[0] + `?uid=${uid}`;
     });
+    this._sharedMobileDiv.appendChild(child);
+
+    template = document.createElement("template");
+    template.innerHTML =
+    `<div class="menuEntry">
+      <p class="menuEntryText">${rhit.sanitizeString(displayName)}</p>
+    </div>`.trim();
+    child = template.content.firstChild;
+    child.addEventListener("click", (event) => {
+      window.location.href = window.location.href.split("\?")[0] + `?uid=${uid}`;
+    });
     this._sharedDiv.appendChild(child);
+
     return child;
   }
 }
