@@ -5,6 +5,8 @@ rhit.authManager = null;
 rhit.FB_COLLECTION_SCHEDULE = 'schedule';
 rhit.FB_COLLECTION_USER = 'user';
 
+rhit.menuToggle = false;
+
 rhit.defaultSchedule = {
   days: [{
     periods: [
@@ -448,7 +450,7 @@ rhit.ImportPageController = class {
 		});
 	}
 
-	importSchedule(schedule) {
+	importSchedule(schedule, location) {
 		firebase.firestore().collection(rhit.FB_COLLECTION_SCHEDULE).doc(rhit.authManager.uid).set(schedule).then(function() {
 			window.location.href = '/now.html';
     }).catch(function(error) {
@@ -537,8 +539,8 @@ rhit.ImportPageController = class {
 }
 
 rhit.NowViewPageController = class {
-	constructor() {
-		rhit.scheduleManager = new rhit.ScheduleManager(rhit.authManager.uid);
+	constructor(uid) {
+		rhit.scheduleManager = new rhit.ScheduleManager(uid);
 		rhit.scheduleManager.beginListening(() => {
 			this.updateView();
     });
@@ -589,8 +591,8 @@ rhit.NowViewPageController = class {
 }
 
 rhit.DayViewPageController = class {
-	constructor() {
-		rhit.scheduleManager = new rhit.ScheduleManager(rhit.authManager.uid);
+	constructor(uid) {
+		rhit.scheduleManager = new rhit.ScheduleManager(uid);
 		rhit.scheduleManager.beginListening(() => {
 			this.updateView();
 		});
@@ -728,8 +730,8 @@ rhit.DayViewPageController = class {
 }
 
 rhit.WeekViewPageController = class {
-	constructor() {
-    rhit.scheduleManager = new rhit.ScheduleManager(rhit.authManager.uid);
+	constructor(uid) {
+		rhit.scheduleManager = new rhit.ScheduleManager(uid);
 		rhit.scheduleManager.beginListening(() => {
 			this.updateView();
     });
@@ -886,9 +888,11 @@ rhit.ScheduleManager = class {
 		this._schedule = null;
     this._unsubscribe = null;
     this._hasChanged = false;
+    this._changeListener = null;
 	}
 
 	beginListening(changeListener) {
+    this._changeListener = changeListener;
 		this._unsubscribe = firebase.firestore().collection(rhit.FB_COLLECTION_SCHEDULE).doc(this._uid)
 			.onSnapshot((doc) => {
 				if (!doc.exists) {
@@ -1160,6 +1164,132 @@ rhit.ScheduleManager = class {
     }
     return period.location;
   }
+
+  setSchedule(uid) {
+    this.stopListening();
+    this._uid = uid;
+    this.beginListening(this._changeListener);
+  }
+}
+
+rhit.MenuController = class {
+  constructor(uid) {
+    rhit.menuManager = new rhit.MenuManager(rhit.authManager.uid);
+    rhit.menuManager.beginListening(this.updateView.bind(this));
+
+    let menu = document.querySelector("#menu");
+    let menuMobile = document.querySelector("#menuMobile");
+    let shade = document.querySelector("#shade");
+      document.querySelector("#menuButton").addEventListener("click", (event) => {
+      if (!rhit.menuToggle) {
+        menu.style.width = "400px";
+        menuMobile.style.opacity = "1";
+        shade.classList.add("active");
+      } else {
+        menu.style.width = "0";
+        menuMobile.style.opacity = "0";
+        shade.classList.remove("active");
+      }
+      rhit.menuToggle = !rhit.menuToggle;
+    });
+    shade.addEventListener("click", (event) => {
+      document.querySelector("#menuButton").click();
+    });
+    document.querySelector("#menuMobileCancelButton").addEventListener("click", (event) => {
+      document.querySelector("#menuButton").click();
+    });
+
+    document.querySelector("#myScheduleEntry").addEventListener("click", (event) => {
+      window.location.href = window.location.href.split("\?")[0] + `?uid=${rhit.authManager.uid}`;
+    });
+    document.querySelector("#myScheduleMobile").addEventListener("click", (event) => {
+      window.location.href = window.location.href.split("\?")[0] + `?uid=${rhit.authManager.uid}`;
+    });
+
+    let search = document.querySelector("#searchMenu");
+    search.addEventListener("input", (event) => {
+      rhit.menuManager.filter(RegExp(search.value, "i"));
+    });
+    search.addEventListener("keydown", (event) => {
+      if (event.keyCode === 27) {
+        search.value = "";
+        search.blur();
+        rhit.menuManager.filter(RegExp(""));
+      }
+    });
+
+    document.querySelector("#nowLink" ).setAttribute("href", `now.html?uid=${uid}` );
+    document.querySelector("#dayLink" ).setAttribute("href", `day.html?uid=${uid}` );
+    document.querySelector("#weekLink").setAttribute("href", `week.html?uid=${uid}`);
+  }
+
+  updateView() {
+
+  }
+}
+
+rhit.MenuManager = class {
+  constructor(uid) {
+    this._uid       = uid;
+    this._shared    = new Map();
+    this._sharedDiv = document.querySelector("#sharedList");
+    this._sharedMobileDiv = document.querySelector("#menuMobileDynamicList");
+  }
+
+  beginListening(changeListener) {
+    this._unsubscribe = firebase.firestore().collection(rhit.FB_COLLECTION_SCHEDULE)
+    .onSnapshot((docs) => {
+      this._shared = new Map();
+      this._sharedDiv.innerHTML = "";
+      this._sharedMobileDiv.innerHTML = "";
+      for (let doc of docs.docs) {
+        if (doc.data().sharedWith && doc.data().sharedWith.includes(this._uid)) {
+          firebase.firestore().collection(rhit.FB_COLLECTION_USER).doc(doc.id).get().then((foreignDoc) => {
+            this._shared.set(doc.id, this._createSharedElement(foreignDoc.id, foreignDoc.data().displayName));
+          });
+        }
+      }
+      changeListener();
+    });
+  }
+
+  stopListening() {
+    this._unsubscribe();
+  }
+
+  filter(regex) {
+    for (let [key, value] of this._shared) {
+      if (!regex.test(key)) {
+        value.style.display = "none";
+      } else {
+        value.style.display = "block";
+      }
+    }
+  }
+
+  _createSharedElement(uid, displayName) { 
+    let template = document.createElement("template");
+    template.innerHTML = `<p class="menuMobileEntry">${rhit.sanitizeString(displayName)}</p>`.trim();
+    console.log(template);
+    let child = template.content.firstChild;
+    child.addEventListener("click", (event) => {
+      window.location.href = window.location.href.split("\?")[0] + `?uid=${uid}`;
+    });
+    this._sharedMobileDiv.appendChild(child);
+
+    template = document.createElement("template");
+    template.innerHTML =
+    `<div class="menuEntry">
+      <p class="menuEntryText">${rhit.sanitizeString(displayName)}</p>
+    </div>`.trim();
+    child = template.content.firstChild;
+    child.addEventListener("click", (event) => {
+      window.location.href = window.location.href.split("\?")[0] + `?uid=${uid}`;
+    });
+    this._sharedDiv.appendChild(child);
+
+    return child;
+  }
 }
 
 rhit.SettingsPageController = class {
@@ -1186,7 +1316,7 @@ rhit.SettingsPageController = class {
       if (event.keyCode === 13) { // Enter key
         nameField.blur();
       } else if (event.keyCode === 27) { // Escape key
-        nameField.value = rhit.settingsManager.name;
+        nameField.value = rhit.desanitizeString(rhit.settingsManager.name);
         nameField.blur();
       }
     });
@@ -1194,10 +1324,46 @@ rhit.SettingsPageController = class {
     nameField.addEventListener("focusout", (event) => {
       rhit.settingsManager.setName(nameField.value);
     });
+
+    let searchField = document.querySelector("#searchShare");
+    searchField.addEventListener("input", (event) => {
+      for (let user of rhit.settingsManager.users.values()) {
+        if (user.shared === false) {
+          let regex = new RegExp("^" + searchField.value, "i");
+          if (regex.test(user.name) || regex.test(user.email)) {
+            user.element.style.display = "flex";
+          } else {
+            user.element.style.display = "none";
+          }
+        }
+      }
+    });
+
+    searchField.addEventListener("focusin", (event) => {
+      document.querySelector("#cancelSearch").style.display = "block";
+      document.querySelector("#shared-users").style.display = "none";
+      document.querySelector("#share-with-users").style.display = "flex";
+    });
+
+    searchField.addEventListener("keydown", (event) => {
+      if (event.keyCode === 27) {
+        document.querySelector("#cancelSearch").style.display = "none";
+        document.querySelector("#shared-users").style.display = "flex";
+        document.querySelector("#share-with-users").style.display = "none";
+        searchField.value = "";
+        searchField.blur();
+      }
+    });
+
+    document.querySelector("#cancelSearch").addEventListener("click", (event) => {
+      document.querySelector("#cancelSearch").style.display = "none";
+      document.querySelector("#shared-users").style.display = "flex";
+      document.querySelector("#share-with-users").style.display = "none";
+    });
   }
 
   updateView() {
-    document.querySelector("#name").value = rhit.settingsManager.name;
+    document.querySelector("#name").value = rhit.desanitizeString(rhit.settingsManager.name);
   }
 }
 
@@ -1205,11 +1371,14 @@ rhit.SettingsManager = class {
   constructor(uid) {
     this._uid    = uid;
     this._name   = "Jane Doe";
-    this._shared = [];
+    this._shared = new Map();
+    this._users  = new Map();
+    this._sharedUserDiv = document.querySelector("#shared-users");
+    this._shareWithDiv  = document.querySelector("#share-with-users");
   }
 
   beginListening(changeListener) {
-		this._unsubscribe = firebase.firestore().collection(rhit.FB_COLLECTION_USER).doc(this._uid)
+		this._unsubscribeSelf = firebase.firestore().collection(rhit.FB_COLLECTION_USER).doc(this._uid)
 			.onSnapshot((doc) => {
 				if (!doc.exists) {
           this.setName(this._uid);
@@ -1219,17 +1388,127 @@ rhit.SettingsManager = class {
 			  changeListener();
 			}, (error) => {
 				console.error(error);
-			});
+      });
+      
+    this._unsubscribeSchedule = firebase.firestore().collection(rhit.FB_COLLECTION_SCHEDULE).doc(this._uid)
+      .onSnapshot((doc) => {
+        this._sharedUserDiv.innerHTML = "";
+        this._shared = new Map();
+        if (doc.data().sharedWith) {
+          for (let user of doc.data().sharedWith) {
+            firebase.firestore().collection(rhit.FB_COLLECTION_USER).doc(user).get().then((doc) => {
+              this._shared.set(user, { name: doc.data().displayName, email: `${user}@rose-hulman.edu`, element: this._createSharedElement(user, doc.data().displayName) });
+              if (this._users.has(user)) {
+                this._users.get(user).element.style.display = "none";
+                this._users.get(user).shared = true;
+              }
+            });
+          }
+        }
+      });
+    
+    this._unsubscribeUsers = firebase.firestore().collection(rhit.FB_COLLECTION_USER)
+      .onSnapshot((docs) => {
+        this._shareWithDiv.innerHTML = "";
+        this._users = new Map();
+        if (docs.docs) {
+          for (let doc of docs.docs) {
+            if (this._uid !== doc.id) {
+              this._users.set(doc.id, { name: doc.data().displayName, email: `${doc.id}@rose-hulman.edu`, shared: false, element: this._createShareWithElement(doc.id, doc.data().displayName) });
+              if (this._shared.has(doc.id)) {
+                this._users.get(doc.id).element.style.display = "none";
+                this._users.get(doc.id).shared = true;
+              }
+            }
+          }
+        }
+      });
+  }
+
+  stopListening() {
+    this._unsubscribeSelf();
+    this._unsubscribeSchedule();
+    this._unsubscribeUsers();
   }
 
   setName(name) {
+    name = rhit.sanitizeString(name);
     this._name = name;
-    firebase.firestore().collection(rhit.FB_COLLECTION_USER).doc(this._uid).set({ displayName: this._name }).catch((error) => { console.error(error); });
+    firebase.firestore().collection(rhit.FB_COLLECTION_USER).doc(this._uid).update({ displayName: this._name }).catch((error) => { console.error(error); });
+  }
+
+  removeUser(uid) {
+    this._shared.get(uid).element.remove();
+    this._shared.delete(uid);
+    this._users.get(uid).element.style.display = "flex";
+    this._users.get(uid).shared = false;
+    firebase.firestore().collection(rhit.FB_COLLECTION_SCHEDULE).doc(this._uid).update({ sharedWith: Array.from(this._shared.keys()) }).catch((error) => { console.error(error); });
+  }
+
+  addUser(uid) {
+    this._shared.set(uid, null);
+    firebase.firestore().collection(rhit.FB_COLLECTION_SCHEDULE).doc(this._uid).update({ sharedWith: Array.from(this._shared.keys()) }).catch((error) => { console.error(error); });
   }
 
   get name() {
     return this._name;
   }
+
+  get users() {
+    return this._users;
+  }
+
+  get sharedUsers() {
+    return this._shared;
+  }
+
+  _createSharedElement(uid, displayName) {
+    let template = document.createElement("template");
+    template.innerHTML =
+    `<div class="shared-user-card">
+      <div class="shared-text">
+        <p class="shared-username">${rhit.sanitizeString(displayName)}</p>
+        <p class="shared-email">${uid}@rose-hulman.edu</p>
+      </div>
+      <div class="remove-shared oi oi-circle-x"></div>
+    </div>`.trim();
+    let child = template.content.firstChild;
+    child.addEventListener("click", (event) => {
+      rhit.settingsManager.removeUser(uid);
+    });
+    this._sharedUserDiv.appendChild(child);
+    return child;
+  }
+
+  _createShareWithElement(uid, displayName) {
+    let template = document.createElement("template");
+    template.innerHTML =
+    `<div class="share-with-user-card">
+      <div class="share-with-text">
+        <p class="share-with-username">${rhit.sanitizeString(displayName)}</p>
+        <p class="share-with-email">${uid}@rose-hulman.edu</p>
+      </div>
+      <div class="add-shared oi oi-plus"></div>
+    </div>`.trim();
+    let child = template.content.firstChild;
+    child.addEventListener("click", (event) => {
+      rhit.settingsManager.addUser(uid);
+    });
+    this._shareWithDiv.appendChild(child);
+    return child;
+  }
+}
+
+rhit.sanitizeString = (text) => {
+  let p = document.createElement("p");
+  p.innerText = text;
+  return p.innerHTML;
+}
+
+rhit.desanitizeString = (text) => {
+  let p = document.createElement("p");
+  p.innerHTML = text;
+  return p.innerText;
 }
 
 rhit.checkForRedirects = () => {
@@ -1241,6 +1520,9 @@ rhit.checkForRedirects = () => {
 }
 
 rhit.initializePage = function() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const uid = urlParams.get("uid") ? urlParams.get("uid") : rhit.authManager.uid;
+
   if (document.querySelector('.btn-log-out')) {
     document.querySelector('.btn-log-out').addEventListener('click', () => {
       rhit.authManager.signOut();
@@ -1248,24 +1530,27 @@ rhit.initializePage = function() {
   }
 
   if (document.querySelector('.navbar-name')) {
-    // TODO: Update with name of selected person's schedule, not just current user
-    const displayName = rhit.authManager.displayName;
-    if (displayName) {
-      document.querySelector('.navbar-name').innerText = displayName[displayName.length - 1].toLowerCase() === 's' 
-        ? `${displayName}' Schedule` 
-        : `${displayName}'s Schedule`;
-    }
+    firebase.firestore().collection(rhit.FB_COLLECTION_USER).doc(uid).get().then((doc) => {
+      const displayName = doc.data().displayName;
+      if (displayName) {
+        document.querySelector('.navbar-name').innerText = displayName[displayName.length - 1].toLowerCase() === 's' 
+          ? `${displayName}' Schedule` 
+          : `${displayName}'s Schedule`;
+      }
+    });
   }
 
-	const urlParams = new URLSearchParams(window.location.search);
 	if (document.querySelector('#importPage')) {
 		new rhit.ImportPageController();
 	} else if (document.querySelector('#dayViewPage')) {
-		new rhit.DayViewPageController();
+		new rhit.DayViewPageController(uid);
+    new rhit.MenuController(uid);
 	} else if (document.querySelector('#weekViewPage')) {
-		new rhit.WeekViewPageController();
+		new rhit.WeekViewPageController(uid);
+    new rhit.MenuController(uid);
 	} else if (document.querySelector('#nowViewPage')) {
-		new rhit.NowViewPageController();
+		new rhit.NowViewPageController(uid);
+    new rhit.MenuController(uid);
 	} else if (document.querySelector("#loginPage")) {
 		new rhit.LoginPageController();
   } else if (document.querySelector("#settingsPage")) {

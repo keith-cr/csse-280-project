@@ -1,27 +1,42 @@
-:root {
-    --accent: #800000;
-    --accent-complement: white;
-    --background-primary: white;
-    --background-secondary: #E6E6E6;
-    --foreground-primary: black;
-    --foreground-secondary: #666666;
+
+html, body {
+    height: 100%;
 }
 
 body {
     background: var(--background-primary);
+
+    display: flex;
+    flex-direction: column;
 }
 
 .navbar {
+    position: static;
     background-color: var(--accent);
     color: white;
+<<<<<<< HEAD
     min-height: 56px;
+=======
+
+    z-index: 2;
+}
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+}
+
+#page {
+    height: 100%;
+>>>>>>> gnarwhal
 }
 
 .page-container {
-    margin-top: 75px;
+    margin-top: 10px;
     margin-right: 0;
     margin-left: 0;
     max-width: 100%;
+    height: max-content;
     padding: 0;
 }
 
@@ -114,6 +129,114 @@ body {
     background-color: var(--accent);
     border-radius: 100px;
     color: var(--accent-complement);
+}
+
+#menu {
+    display: none;
+    background-color: var(--background-primary);
+    z-index: 2;
+}
+
+#menuButton {
+    margin-right: 0.5em;
+}
+
+#menuMobile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+
+    opacity: 0;
+
+    transition-property: opacity;
+    transition-duration: 0.25s;
+
+    pointer-events: none;
+
+    z-index: 2;
+}
+
+#menuMobileBody {
+    display: block;
+    width: max-content;
+    height: max-content;
+    background-color: var(--background-primary);
+    pointer-events: auto;
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.5);
+}
+
+#menuMobileHeader {
+    margin: 1em 2em;
+
+    color: var(--foreground-primary);
+    font-size: 1.5em;
+}
+
+#menuMobileList {
+    height: max-content;
+    max-height: 200px;
+    border-top: 1px solid var(--background-secondary);
+    border-bottom: 1px solid var(--background-secondary);
+    overflow: scroll;
+}
+
+#myScheduleMobile {
+    border-top: 0;
+}
+
+.menuMobileEntry {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 40px;
+    margin: 0;
+    padding: 0 1.5em;
+    color: var(--foreground-primary);
+    border-top: 1px solid var(--background-secondary);
+}
+
+#menuMobileFooter {
+    width: 100%;
+    padding: 0.5em 1em;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}
+
+.btn.btn-cancel,
+.btn.btn-cancel:hover
+.btn.btn-cancel:active {
+    color: var(--accent);
+}
+
+#shade {
+    background-color: rgba(0, 0, 0, 0);
+
+    transition-property: background-color;
+    transition-duration: 0.25s;
+
+    position: fixed;
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+
+    left: 0;
+    top: 0;
+
+    pointer-events: none;
+     
+    z-index: 1;
+}
+
+#shade.active {
+    background-color: rgba(0, 0, 0, 0.75);
+
+    pointer-events: auto;
 }
 
 .navbar .btn-log-out, .navbar .btn-log-out:hover, .navbar .btn-log-out:active, .navbar .btn-log-out:focus {
@@ -305,7 +428,12 @@ hr.border-color {
     margin-right: 0.25em;
 }
 
-.shared-users {
+#cancelSearch {
+    margin-left: 0.25em;
+    display: none;
+}
+
+#shared-users {
     display: flex;
     justify-content: flex-start;
     flex-wrap: wrap;
@@ -344,6 +472,48 @@ hr.border-color {
 
 .remove-shared {
     color: var(--foreground-secondary);
+}
+
+#share-with-users {
+    display: none;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.share-with-user-card {
+    margin-top: 1em;
+    margin-left: 1%;
+    margin-right: 1%;
+
+    width: 100%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background-color: var(--accent);
+    border: 2px solid var(--accent);
+    border-radius: 1em;
+
+    padding: 1em;
+}
+
+.share-with-username {
+    margin: 0;
+    font-size: 1em;
+
+    color: var(--accent-complement);
+}
+
+.share-with-email {
+    margin: 0;
+    font-size: 0.85em;
+
+    color: var(--accent-complement);
+}
+
+.add-shared{
+    color: var(--accent-complement);
 }
 
 #loginButton,
@@ -390,17 +560,17 @@ hr.border-color {
 }
 
 .class-entry.current-day, .class-entry.current-period {
-    background-color: rgba(128, 0, 0, .24);
+    background-color: var(--accent-secondary);
 }
 
 .class-entry.current-day.current-period {
     background-color: var(--accent);
-    color: #fff;
+    color: var(--accent-complement);
 }
 
 .import-button, .import-button:hover, .import-button:active, .import-button:focus, .import-button:active:focus {
-    background-color: #eee;
-    color: #800000;
+    background-color: var(--background-secondary);
+    color: var(--accent);
 }
 
 .import-button {
@@ -408,8 +578,8 @@ hr.border-color {
 }
 
 .skip-import-button, .skip-import-button:hover, .skip-import-button:active, .skip-import-button:focus, .skip-import-button:active:focus {
-    background-color: #800000;
-    color: #fff;
+    background-color: var(--accent);
+    color: var(--accent-complement);
 }
 
 .btn.btn-lg.import-button, .btn.btn-lg.skip-import-button {
@@ -431,7 +601,7 @@ hr.border-color {
 }
 
 a, a:hover, a:focus {
-    color: #800000;
+    color: var(--accent);
 }
 
 #fileInput {
@@ -439,7 +609,7 @@ a, a:hover, a:focus {
 }
 
 .custom-file-control, .form-control, .is-focused .custom-file-control, .is-focused .form-control {
-    background-image: linear-gradient(0deg, #800000 2px,rgba(0,150,136,0) 0),linear-gradient(0deg,rgba(0,0,0,.26) 1px,transparent 0);
+    background-image: linear-gradient(0deg, var(--accent) 2px,rgba(0,150,136,0) 0),linear-gradient(0deg,rgba(0,0,0,.26) 1px,transparent 0);
 }
 
 .switch label .bmd-switch-track {
@@ -540,6 +710,74 @@ a, a:hover, a:focus {
 }
 
 @media (min-width: 768px) {
+    #page {
+        display: flex;
+    }
+
+    #menuMobile {
+        display: none;
+    }
+
+    #menu {
+        display: block;
+
+        width: 0;
+        height: 100%;
+        transition-property: width;
+        transition-duration: 0.5s;
+        overflow: hidden;
+
+        box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12)
+    }
+
+    #menuHeader {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        text-overflow: hidden;
+        white-space: nowrap;
+        
+        background-color: var(--accent);
+        color: var(--accent-complement);
+
+        font-size: 2em;
+    }
+
+    #menuTitle {
+        margin-top: 0.5em;
+        margin-bottom: 0;
+    }
+
+    #searchMenu {
+        color: var(--accent-complement);
+    }
+
+    #searchMenu::placeholder {
+        color: var(--accent-complement);
+        opacity: 0.5;
+    }
+
+    .menuEntry {
+        padding-left: 1em;
+        padding-top: 0.5em;
+        padding-bottom: 0.5em;
+        border-bottom: 1px solid var(--background-secondary);
+        transition-property: background-color;
+        transition-duration: 0.2s;
+
+        text-overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .menuEntry:hover {
+        background-color: var(--background-secondary);
+    }
+
+    .menuEntryText {
+        margin: 0;
+    }
+
     .view-selector {
         flex-direction: column;
         height: 100%;
@@ -567,10 +805,6 @@ a, a:hover, a:focus {
 
     .now-page .card {
         margin-bottom: 30px;
-    }
-
-    .day-page.page-container {
-        margin-top: 56px;
     }
 
     .day-page .view-selector, .day-page .day-selector {
@@ -628,12 +862,17 @@ a, a:hover, a:focus {
         width: 48%;
     }
 
+<<<<<<< HEAD
     .period:first-of-type {
         border-top: none;
     }
 
     .edit-instructions {
         font-size: 2rem;
+=======
+    .share-with-user-card {
+        width: 48%;
+>>>>>>> gnarwhal
     }
 }
 
@@ -642,4 +881,7 @@ a, a:hover, a:focus {
         width: 32%;
     }
 
+    .share-with-user-card {
+        width: 32%;
+    }
 }

@@ -7,293 +7,328 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
   <link rel="stylesheet" href="styles/bootstrap-material-design.min.css">
   <link rel="stylesheet" href="styles/open-iconic-bootstrap.css">
+  <link rel="stylesheet" href="styles/light.css">
   <link rel="stylesheet" href="styles/main.css">
   <title>Week View | Rose Schedule</title>
 </head>
 
 <body>
   <nav class="navbar navbar-dark fixed-top justify-content-between">
-    <a class="navbar-brand navbar-name" href="/now.html">Rose Schedule</a>
+    <div class="navbar-left">
+      <i id="menuButton" class="material-icons">menu</i>
+      <a class="navbar-brand navbar-name" href="/now.html">Rose Schedule</a>
+    </div>
     <div class="navbar-right">
       <div class="navbar-actions">
-        <span class="oi oi-pencil edit-button"></span>
-        <span class="oi oi-check save-button d-none"></span>
-        <span id="settings" class="oi oi-cog"></span>
+        <div class="navbar-myschedule">
+          <span class="oi oi-pencil edit-button"></span>
+          <span class="oi oi-check save-button d-none"></span>
+          <span id="settings" class="oi oi-cog"></span>
+        </div>
         <button class="btn btn-log-out my-2 my-sm-0 d-none d-md-inline-block">Log Out</button>  
       </div>
     </div>
   </nav>
-  <div id="weekViewPage" class="container page-container">
-    <div class="row no-gutters">
-      <div class="col-md-1">
-        <div class="view-selector">
-          <div class="view-text view-label">View:</div>
-          <a href="/now.html" class="view-text">Now</a>
-          <a href="/day.html" class="view-text">Day</a>
-          <a href="/week.html" class="view-text active">Week</a>
+  <div id="page">
+    <div id="menu">
+      <div id="menuHeader">
+        <p id="menuTitle">Select Schedule</p>
+        <div class="bmd-form-group bmd-collapse-inline pull-xs-right">
+          <i class="material-icons search-icon">search</i>
+          <input class="form-control" type="text" id="searchMenu" placeholder="Search for a user">
         </div>
       </div>
-      <div class="col">
-        <div class="edit-instructions d-none">Select the Class to Edit by Clicking It's Name</div>
-        <div id="week">
-          <div class="week-day-header">
-            <div class="day-header">Time</div>
-            <div class="day-header">M</div>
-            <div class="day-header">TU</div>
-            <div class="day-header">W</div>
-            <div class="day-header">TR</div>
-            <div class="day-header">F</div>
+      <div id="myScheduleEntry" class="menuEntry">
+        <p class="menuEntryText">My Schedule</p>
+      </div>
+      <div id="sharedList">
+      </div>
+    </div>
+    <div id="shade"></div>
+    <div id="menuMobile">
+      <div id="menuMobileBody">
+        <p id="menuMobileHeader">Select Schedule</p>
+        <div id="menuMobileList">
+          <p id="myScheduleMobile" class="menuMobileEntry">My Schedule</p>
+          <div id="menuMobileDynamicList">
           </div>
-          <div class="week-day">
-            <div class="time">8:00 - 8:50</div>
-            <div class="class-entry" data-day="0" data-period="0"></div>
-            <div class="class-entry" data-day="1" data-period="0"></div>
-            <div class="class-entry" data-day="2" data-period="0"></div>
-            <div class="class-entry" data-day="3" data-period="0"></div>
-            <div class="class-entry" data-day="4" data-period="0"></div>
+        </div>
+        <div id="menuMobileFooter">
+          <button id="menuMobileCancelButton" class="btn btn-cancel">CANCEL</button>
+        </div>
+      </div>
+    </div>
+    <div id="weekViewPage" class="container page-container">
+      <div class="row no-gutters">
+        <div class="col-md-1">
+          <div class="view-selector">
+            <div class="view-text view-label">View:</div>
+            <a id="nowLink"  href="/now.html" class="view-text">Now</a>
+            <a id="dayLink"  href="/day.html" class="view-text">Day</a>
+            <a id="weekLink" href="/week.html" class="view-text active">Week</a>
           </div>
-          <div class="week-edit period-0 d-none">
-            <div class="arrow-pointer"></div>
-            <span class="oi oi-check save-period-button"></span>
-            <div class="week-edit-container">
-              <div class="switch">
-                <label>
-                  <input class="period-free-checkbox" type="checkbox">
-                  Free
-                </label>
-              </div>
-              <div class="edit-fields">
-                <div class="form-group">
-                  <input type="text" placeholder="Name" class="form-control period-name-input">
+        </div>
+        <div class="col">
+          <div class="edit-instructions d-none">Select the Class to Edit by Clicking It's Name</div>
+          <div id="week">
+            <div class="week-day-header">
+              <div class="day-header">Time</div>
+              <div class="day-header">M</div>
+              <div class="day-header">TU</div>
+              <div class="day-header">W</div>
+              <div class="day-header">TR</div>
+              <div class="day-header">F</div>
+            </div>
+            <div class="week-day">
+              <div class="time">8:00 - 8:50</div>
+              <div class="class-entry" data-day="0" data-period="0"></div>
+              <div class="class-entry" data-day="1" data-period="0"></div>
+              <div class="class-entry" data-day="2" data-period="0"></div>
+              <div class="class-entry" data-day="3" data-period="0"></div>
+              <div class="class-entry" data-day="4" data-period="0"></div>
+            </div>
+            <div class="week-edit period-0 d-none">
+              <div class="arrow-pointer"></div>
+              <span class="oi oi-check save-period-button"></span>
+              <div class="week-edit-container">
+                <div class="switch">
+                  <label>
+                    <input class="period-free-checkbox" type="checkbox">
+                    Free
+                  </label>
                 </div>
-                <div class="form-group">
-                  <input type="text" placeholder="Location" class="form-control period-location-input">
-                </div>  
+                <div class="edit-fields">
+                  <div class="form-group">
+                    <input type="text" placeholder="Name" class="form-control period-name-input">
+                  </div>
+                  <div class="form-group">
+                    <input type="text" placeholder="Location" class="form-control period-location-input">
+                  </div>  
+                </div>
               </div>
             </div>
-          </div>
-          <div class="week-day">
-            <div class="time">9:00 - 9:50</div>
-            <div class="class-entry" data-day="0" data-period="1"></div>
-            <div class="class-entry" data-day="1" data-period="1"></div>
-            <div class="class-entry" data-day="2" data-period="1"></div>
-            <div class="class-entry" data-day="3" data-period="1"></div>
-            <div class="class-entry" data-day="4" data-period="1"></div>
-          </div>
-          <div class="week-edit period-1 d-none">
-            <div class="arrow-pointer"></div>
-            <span class="oi oi-check save-period-button"></span>
-            <div class="week-edit-container">
-              <div class="switch">
-                <label>
-                  <input class="period-free-checkbox" type="checkbox">
-                  Free
-                </label>
-              </div>
-              <div class="edit-fields">
-                <div class="form-group">
-                  <input type="text" placeholder="Name" class="form-control period-name-input">
+            <div class="week-day">
+              <div class="time">9:00 - 9:50</div>
+              <div class="class-entry" data-day="0" data-period="1"></div>
+              <div class="class-entry" data-day="1" data-period="1"></div>
+              <div class="class-entry" data-day="2" data-period="1"></div>
+              <div class="class-entry" data-day="3" data-period="1"></div>
+              <div class="class-entry" data-day="4" data-period="1"></div>
+            </div>
+            <div class="week-edit period-1 d-none">
+              <div class="arrow-pointer"></div>
+              <span class="oi oi-check save-period-button"></span>
+              <div class="week-edit-container">
+                <div class="switch">
+                  <label>
+                    <input class="period-free-checkbox" type="checkbox">
+                    Free
+                  </label>
                 </div>
-                <div class="form-group">
-                  <input type="text" placeholder="Location" class="form-control period-location-input">
-                </div>  
+                <div class="edit-fields">
+                  <div class="form-group">
+                    <input type="text" placeholder="Name" class="form-control period-name-input">
+                  </div>
+                  <div class="form-group">
+                    <input type="text" placeholder="Location" class="form-control period-location-input">
+                  </div>  
+                </div>
               </div>
             </div>
-          </div>
-          <div class="week-day">
-            <div class="time">10:00 - 10:50</div>
-            <div class="class-entry" data-day="0" data-period="2"></div>
-            <div class="class-entry" data-day="1" data-period="2"></div>
-            <div class="class-entry" data-day="2" data-period="2"></div>
-            <div class="class-entry" data-day="3" data-period="2"></div>
-            <div class="class-entry" data-day="4" data-period="2"></div>
-          </div>
-          <div class="week-edit period-2 d-none">
-            <div class="arrow-pointer"></div>
-            <span class="oi oi-check save-period-button"></span>
-            <div class="week-edit-container">
-              <div class="switch">
-                <label>
-                  <input class="period-free-checkbox" type="checkbox">
-                  Free
-                </label>
-              </div>
-              <div class="edit-fields">
-                <div class="form-group">
-                  <input type="text" placeholder="Name" class="form-control period-name-input">
+            <div class="week-day">
+              <div class="time">10:00 - 10:50</div>
+              <div class="class-entry" data-day="0" data-period="2"></div>
+              <div class="class-entry" data-day="1" data-period="2"></div>
+              <div class="class-entry" data-day="2" data-period="2"></div>
+              <div class="class-entry" data-day="3" data-period="2"></div>
+              <div class="class-entry" data-day="4" data-period="2"></div>
+            </div>
+            <div class="week-edit period-2 d-none">
+              <div class="arrow-pointer"></div>
+              <span class="oi oi-check save-period-button"></span>
+              <div class="week-edit-container">
+                <div class="switch">
+                  <label>
+                    <input class="period-free-checkbox" type="checkbox">
+                    Free
+                  </label>
                 </div>
-                <div class="form-group">
-                  <input type="text" placeholder="Location" class="form-control period-location-input">
-                </div>  
+                <div class="edit-fields">
+                  <div class="form-group">
+                    <input type="text" placeholder="Name" class="form-control period-name-input">
+                  </div>
+                  <div class="form-group">
+                    <input type="text" placeholder="Location" class="form-control period-location-input">
+                  </div>  
+                </div>
               </div>
             </div>
-          </div>
-          <div class="week-day">
-            <div class="time">11:00 - 11:50</div>
-            <div class="class-entry" data-day="0" data-period="3"></div>
-            <div class="class-entry" data-day="1" data-period="3"></div>
-            <div class="class-entry" data-day="2" data-period="3"></div>
-            <div class="class-entry" data-day="3" data-period="3"></div>
-            <div class="class-entry" data-day="4" data-period="3"></div>
-          </div>
-          <div class="week-edit period-3 d-none">
-            <div class="arrow-pointer"></div>
-            <span class="oi oi-check save-period-button"></span>
-            <div class="week-edit-container">
-              <div class="switch">
-                <label>
-                  <input class="period-free-checkbox" type="checkbox">
-                  Free
-                </label>
-              </div>
-              <div class="edit-fields">
-                <div class="form-group">
-                  <input type="text" placeholder="Name" class="form-control period-name-input">
+            <div class="week-day">
+              <div class="time">11:00 - 11:50</div>
+              <div class="class-entry" data-day="0" data-period="3"></div>
+              <div class="class-entry" data-day="1" data-period="3"></div>
+              <div class="class-entry" data-day="2" data-period="3"></div>
+              <div class="class-entry" data-day="3" data-period="3"></div>
+              <div class="class-entry" data-day="4" data-period="3"></div>
+            </div>
+            <div class="week-edit period-3 d-none">
+              <div class="arrow-pointer"></div>
+              <span class="oi oi-check save-period-button"></span>
+              <div class="week-edit-container">
+                <div class="switch">
+                  <label>
+                    <input class="period-free-checkbox" type="checkbox">
+                    Free
+                  </label>
                 </div>
-                <div class="form-group">
-                  <input type="text" placeholder="Location" class="form-control period-location-input">
-                </div>  
+                <div class="edit-fields">
+                  <div class="form-group">
+                    <input type="text" placeholder="Name" class="form-control period-name-input">
+                  </div>
+                  <div class="form-group">
+                    <input type="text" placeholder="Location" class="form-control period-location-input">
+                  </div>  
+                </div>
               </div>
             </div>
-          </div>
-          <div class="week-day">
-            <div class="time">12:00 - 12:50</div>
-            <div class="class-entry" data-day="0" data-period="4"></div>
-            <div class="class-entry" data-day="1" data-period="4"></div>
-            <div class="class-entry" data-day="2" data-period="4"></div>
-            <div class="class-entry" data-day="3" data-period="4"></div>
-            <div class="class-entry" data-day="4" data-period="4"></div>
-          </div>
-          <div class="week-edit period-4 d-none">
-            <div class="arrow-pointer"></div>
-            <span class="oi oi-check save-period-button"></span>
-            <div class="week-edit-container">
-              <div class="switch">
-                <label>
-                  <input class="period-free-checkbox" type="checkbox">
-                  Free
-                </label>
-              </div>
-              <div class="edit-fields">
-                <div class="form-group">
-                  <input type="text" placeholder="Name" class="form-control period-name-input">
+            <div class="week-day">
+              <div class="time">12:00 - 12:50</div>
+              <div class="class-entry" data-day="0" data-period="4"></div>
+              <div class="class-entry" data-day="1" data-period="4"></div>
+              <div class="class-entry" data-day="2" data-period="4"></div>
+              <div class="class-entry" data-day="3" data-period="4"></div>
+              <div class="class-entry" data-day="4" data-period="4"></div>
+            </div>
+            <div class="week-edit period-4 d-none">
+              <div class="arrow-pointer"></div>
+              <span class="oi oi-check save-period-button"></span>
+              <div class="week-edit-container">
+                <div class="switch">
+                  <label>
+                    <input class="period-free-checkbox" type="checkbox">
+                    Free
+                  </label>
                 </div>
-                <div class="form-group">
-                  <input type="text" placeholder="Location" class="form-control period-location-input">
-                </div>  
+                <div class="edit-fields">
+                  <div class="form-group">
+                    <input type="text" placeholder="Name" class="form-control period-name-input">
+                  </div>
+                  <div class="form-group">
+                    <input type="text" placeholder="Location" class="form-control period-location-input">
+                  </div>  
+                </div>
               </div>
             </div>
-          </div>
-          <div class="week-day">
-            <div class="time">1:00 - 1:50</div>
-            <div class="class-entry" data-day="0" data-period="5"></div>
-            <div class="class-entry" data-day="1" data-period="5"></div>
-            <div class="class-entry" data-day="2" data-period="5"></div>
-            <div class="class-entry" data-day="3" data-period="5"></div>
-            <div class="class-entry" data-day="4" data-period="5"></div>
-          </div>
-          <div class="week-edit period-5 d-none">
-            <div class="arrow-pointer"></div>
-            <span class="oi oi-check save-period-button"></span>
-            <div class="week-edit-container">
-              <div class="switch">
-                <label>
-                  <input class="period-free-checkbox" type="checkbox">
-                  Free
-                </label>
-              </div>
-              <div class="edit-fields">
-                <div class="form-group">
-                  <input type="text" placeholder="Name" class="form-control period-name-input">
+            <div class="week-day">
+              <div class="time">1:00 - 1:50</div>
+              <div class="class-entry" data-day="0" data-period="5"></div>
+              <div class="class-entry" data-day="1" data-period="5"></div>
+              <div class="class-entry" data-day="2" data-period="5"></div>
+              <div class="class-entry" data-day="3" data-period="5"></div>
+              <div class="class-entry" data-day="4" data-period="5"></div>
+            </div>
+            <div class="week-edit period-5 d-none">
+              <div class="arrow-pointer"></div>
+              <span class="oi oi-check save-period-button"></span>
+              <div class="week-edit-container">
+                <div class="switch">
+                  <label>
+                    <input class="period-free-checkbox" type="checkbox">
+                    Free
+                  </label>
                 </div>
-                <div class="form-group">
-                  <input type="text" placeholder="Location" class="form-control period-location-input">
-                </div>  
+                <div class="edit-fields">
+                  <div class="form-group">
+                    <input type="text" placeholder="Name" class="form-control period-name-input">
+                  </div>
+                  <div class="form-group">
+                    <input type="text" placeholder="Location" class="form-control period-location-input">
+                  </div>  
+                </div>
               </div>
             </div>
-          </div>
-          <div class="week-day">
-            <div class="time">2:00 - 2:50</div>
-            <div class="class-entry" data-day="0" data-period="6"></div>
-            <div class="class-entry" data-day="1" data-period="6"></div>
-            <div class="class-entry" data-day="2" data-period="6"></div>
-            <div class="class-entry" data-day="3" data-period="6"></div>
-            <div class="class-entry" data-day="4" data-period="6"></div>
-          </div>
-          <div class="week-edit period-6 d-none">
-            <div class="arrow-pointer"></div>
-            <span class="oi oi-check save-period-button"></span>
-            <div class="week-edit-container">
-              <div class="switch">
-                <label>
-                  <input class="period-free-checkbox" type="checkbox">
-                  Free
-                </label>
-              </div>
-              <div class="edit-fields">
-                <div class="form-group">
-                  <input type="text" placeholder="Name" class="form-control period-name-input">
+            <div class="week-day">
+              <div class="time">2:00 - 2:50</div>
+              <div class="class-entry" data-day="0" data-period="6"></div>
+              <div class="class-entry" data-day="1" data-period="6"></div>
+              <div class="class-entry" data-day="2" data-period="6"></div>
+              <div class="class-entry" data-day="3" data-period="6"></div>
+              <div class="class-entry" data-day="4" data-period="6"></div>
+            </div>
+            <div class="week-edit period-6 d-none">
+              <div class="arrow-pointer"></div>
+              <span class="oi oi-check save-period-button"></span>
+              <div class="week-edit-container">
+                <div class="switch">
+                  <label>
+                    <input class="period-free-checkbox" type="checkbox">
+                    Free
+                  </label>
                 </div>
-                <div class="form-group">
-                  <input type="text" placeholder="Location" class="form-control period-location-input">
-                </div>  
+                <div class="edit-fields">
+                  <div class="form-group">
+                    <input type="text" placeholder="Name" class="form-control period-name-input">
+                  </div>
+                  <div class="form-group">
+                    <input type="text" placeholder="Location" class="form-control period-location-input">
+                  </div>  
+                </div>
               </div>
             </div>
-          </div>
-          <div class="week-day">
-            <div class="time">3:00 - 3:50</div>
-            <div class="class-entry" data-day="0" data-period="7"></div>
-            <div class="class-entry" data-day="1" data-period="7"></div>
-            <div class="class-entry" data-day="2" data-period="7"></div>
-            <div class="class-entry" data-day="3" data-period="7"></div>
-            <div class="class-entry" data-day="4" data-period="7"></div>
-          </div>
-          <div class="week-edit period-7 d-none">
-            <div class="arrow-pointer"></div>
-            <span class="oi oi-check save-period-button"></span>
-            <div class="week-edit-container">
-              <div class="switch">
-                <label>
-                  <input class="period-free-checkbox" type="checkbox">
-                  Free
-                </label>
-              </div>
-              <div class="edit-fields">
-                <div class="form-group">
-                  <input type="text" placeholder="Name" class="form-control period-name-input">
+            <div class="week-day">
+              <div class="time">3:00 - 3:50</div>
+              <div class="class-entry" data-day="0" data-period="7"></div>
+              <div class="class-entry" data-day="1" data-period="7"></div>
+              <div class="class-entry" data-day="2" data-period="7"></div>
+              <div class="class-entry" data-day="3" data-period="7"></div>
+              <div class="class-entry" data-day="4" data-period="7"></div>
+            </div>
+            <div class="week-edit period-7 d-none">
+              <div class="arrow-pointer"></div>
+              <span class="oi oi-check save-period-button"></span>
+              <div class="week-edit-container">
+                <div class="switch">
+                  <label>
+                    <input class="period-free-checkbox" type="checkbox">
+                    Free
+                  </label>
                 </div>
-                <div class="form-group">
-                  <input type="text" placeholder="Location" class="form-control period-location-input">
-                </div>  
+                <div class="edit-fields">
+                  <div class="form-group">
+                    <input type="text" placeholder="Name" class="form-control period-name-input">
+                  </div>
+                  <div class="form-group">
+                    <input type="text" placeholder="Location" class="form-control period-location-input">
+                  </div>  
+                </div>
               </div>
             </div>
-          </div>
-          <div class="week-day">
-            <div class="time">4:00 - 4:50</div>
-            <div class="class-entry" data-day="0" data-period="8"></div>
-            <div class="class-entry" data-day="1" data-period="8"></div>
-            <div class="class-entry" data-day="2" data-period="8"></div>
-            <div class="class-entry" data-day="3" data-period="8"></div>
-            <div class="class-entry" data-day="4" data-period="8"></div>
-          </div>
-          <div class="week-edit period-8 d-none">
-            <div class="arrow-pointer"></div>
-            <span class="oi oi-check save-period-button"></span>
-            <div class="week-edit-container">
-              <div class="switch">
-                <label>
-                  <input class="period-free-checkbox" type="checkbox">
-                  Free
-                </label>
-              </div>
-              <div class="edit-fields">
-                <div class="form-group">
-                  <input type="text" placeholder="Name" class="form-control period-name-input">
+            <div class="week-day">
+              <div class="time">4:00 - 4:50</div>
+              <div class="class-entry" data-day="0" data-period="8"></div>
+              <div class="class-entry" data-day="1" data-period="8"></div>
+              <div class="class-entry" data-day="2" data-period="8"></div>
+              <div class="class-entry" data-day="3" data-period="8"></div>
+              <div class="class-entry" data-day="4" data-period="8"></div>
+            </div>
+            <div class="week-edit period-8 d-none">
+              <div class="arrow-pointer"></div>
+              <span class="oi oi-check save-period-button"></span>
+              <div class="week-edit-container">
+                <div class="switch">
+                  <label>
+                    <input class="period-free-checkbox" type="checkbox">
+                    Free
+                  </label>
                 </div>
-                <div class="form-group">
-                  <input type="text" placeholder="Location" class="form-control period-location-input">
-                </div>  
-              </div>
+                <div class="edit-fields">
+                  <div class="form-group">
+                    <input type="text" placeholder="Name" class="form-control period-name-input">
+                  </div>
+                  <div class="form-group">
+                    <input type="text" placeholder="Location" class="form-control period-location-input">
+                  </div>  
+                </div>
             </div>
           </div>
         </div>
