@@ -887,8 +887,8 @@ rhit.ScheduleManager = class {
 		this._uid = uid;
 		this._schedule = null;
     this._unsubscribe = null;
-    this._changeListener = null;
     this._hasChanged = false;
+    this._changeListener = null;
 	}
 
 	beginListening(changeListener) {
@@ -1150,7 +1150,7 @@ rhit.ScheduleManager = class {
 		}
 		return null;
   }
-
+  
   getPeriodDisplayName(period) {
     if (period.isFree) {
       return 'Free';
@@ -1520,41 +1520,43 @@ rhit.checkForRedirects = () => {
 }
 
 rhit.initializePage = function() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const uid = urlParams.get("uid") ? urlParams.get("uid") : rhit.authManager.uid;
+	if (document.querySelector("#loginPage")) {
+    new rhit.LoginPageController();
+  } else {
+    const urlParams = new URLSearchParams(window.location.search);
+    const uid = urlParams.get("uid") ? urlParams.get("uid") : rhit.authManager.uid;
 
-  if (document.querySelector('.btn-log-out')) {
-    document.querySelector('.btn-log-out').addEventListener('click', () => {
-      rhit.authManager.signOut();
-    });
-  }
+    if (document.querySelector('.btn-log-out')) {
+      document.querySelector('.btn-log-out').addEventListener('click', () => {
+        rhit.authManager.signOut();
+      });
+    }
 
-  if (document.querySelector('.navbar-name')) {
-    firebase.firestore().collection(rhit.FB_COLLECTION_USER).doc(uid).get().then((doc) => {
-      const displayName = doc.data().displayName;
-      if (displayName) {
-        document.querySelector('.navbar-name').innerText = displayName[displayName.length - 1].toLowerCase() === 's' 
-          ? `${displayName}' Schedule` 
-          : `${displayName}'s Schedule`;
-      }
-    });
-  }
+    if (document.querySelector('.navbar-name')) {
+      firebase.firestore().collection(rhit.FB_COLLECTION_USER).doc(uid).get().then((doc) => {
+        const displayName = doc.data().displayName;
+        if (displayName) {
+          document.querySelector('.navbar-name').innerText = displayName[displayName.length - 1].toLowerCase() === 's' 
+            ? `${displayName}' Schedule` 
+            : `${displayName}'s Schedule`;
+        }
+      });
+    }
 
-	if (document.querySelector('#importPage')) {
-		new rhit.ImportPageController();
-	} else if (document.querySelector('#dayViewPage')) {
-		new rhit.DayViewPageController(uid);
-    new rhit.MenuController(uid);
-	} else if (document.querySelector('#weekViewPage')) {
-		new rhit.WeekViewPageController(uid);
-    new rhit.MenuController(uid);
-	} else if (document.querySelector('#nowViewPage')) {
-		new rhit.NowViewPageController(uid);
-    new rhit.MenuController(uid);
-	} else if (document.querySelector("#loginPage")) {
-		new rhit.LoginPageController();
-  } else if (document.querySelector("#settingsPage")) {
-    new rhit.SettingsPageController();
+    if (document.querySelector('#importPage')) {
+      new rhit.ImportPageController();
+    } else if (document.querySelector('#dayViewPage')) {
+      new rhit.DayViewPageController(uid);
+      new rhit.MenuController(uid);
+    } else if (document.querySelector('#weekViewPage')) {
+      new rhit.WeekViewPageController(uid);
+      new rhit.MenuController(uid);
+    } else if (document.querySelector('#nowViewPage')) {
+      new rhit.NowViewPageController(uid);
+      new rhit.MenuController(uid);
+    } else if (document.querySelector("#settingsPage")) {
+      new rhit.SettingsPageController();
+    }
   }
 };
 
