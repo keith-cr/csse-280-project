@@ -1177,6 +1177,10 @@ rhit.MenuController = class {
     rhit.menuManager = new rhit.MenuManager(rhit.authManager.uid);
     rhit.menuManager.beginListening(this.updateView.bind(this));
 
+    if (uid !== rhit.authManager.uid) {
+      document.querySelector(".navbar-myschedule").style.display = "none";
+    }
+
     let menu = document.querySelector("#menu");
     let menuMobile = document.querySelector("#menuMobile");
     let shade = document.querySelector("#shade");
