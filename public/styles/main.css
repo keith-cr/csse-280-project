@@ -521,6 +521,12 @@ a, a:hover, a:focus {
         padding-top: 0.5em;
         padding-bottom: 0.5em;
         border-bottom: 1px solid var(--background-secondary);
+        transition-property: background-color;
+        transition-duration: 0.2s;
+    }
+
+    .menuEntry:hover {
+        background-color: var(--background-secondary);
     }
 
     .menuEntryText {
