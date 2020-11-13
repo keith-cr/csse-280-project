@@ -1249,7 +1249,7 @@ rhit.MenuManager = class {
       for (let doc of docs.docs) {
         if (doc.data().sharedWith && doc.data().sharedWith.includes(this._uid)) {
           firebase.firestore().collection(rhit.FB_COLLECTION_USER).doc(doc.id).get().then((foreignDoc) => {
-            this._shared.set(doc.id, this._createSharedElement(foreignDoc.id, foreignDoc.data().displayName));
+            this._shared.set(doc.id, { name: foreignDoc.data().displayName, element: this._createSharedElement(foreignDoc.id, foreignDoc.data().displayName) });
           });
         }
       }
@@ -1263,10 +1263,10 @@ rhit.MenuManager = class {
 
   filter(regex) {
     for (let [key, value] of this._shared) {
-      if (!regex.test(key)) {
-        value.style.display = "none";
+      if (!regex.test(key) && !regex.test(value.name)) {
+        value.element.style.display = "none";
       } else {
-        value.style.display = "block";
+        value.element.style.display = "block";
       }
     }
   }
